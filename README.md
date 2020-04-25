@@ -1,0 +1,44 @@
+# Shooting Game
+
+This is a side scrolling shoot 'em up game running on Windows 10.
+It is written in [Go]() and with [Ebiten]() game library.
+
+This is just in development. (Maybe forever.)
+
+[Ebiten]: https://ebiten.org/
+[Go]: https://golang.org/
+
+## Development
+
+### Preparation
+
+NOTE: This program is developed on Ubuntu 20.04 on WSL2. If you build in another environment, you may get an error.
+
+Install build tools on your Ubuntu.
+
+- Install Git. (Any version is okay)
+- Install Go v1.16.xx.
+
+Checkout this repository.
+
+```bash
+$ cd ${GOPATH}/src/github.com/masa213f/
+$ git clone git@github.com:masa213f/shooting-game.git
+$ cd shooting-game
+$ make setup
+```
+
+### Build and Run
+
+```bash
+$ make build
+$ make run
+```
+
+## Special thanks
+
+This program uses some resources published from the following sites.
+
+- Images: [ぴぽや倉庫](https://pipoya.net/sozai/)
+- BGM: [魔王魂](https://maoudamashii.jokersounds.com/)
+- SE: [無料効果音で遊ぼう！](https://taira-komori.jpn.org/)
