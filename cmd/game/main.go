@@ -9,8 +9,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/masa213f/shootinggame/pkg/constant"
 	"github.com/masa213f/shootinggame/pkg/draw"
 	"github.com/masa213f/shootinggame/pkg/scene"
@@ -60,7 +60,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 // Update ...
-func (g *Game) Update(screen *ebiten.Image) error {
+func (g *Game) Update() error {
 	g.tick++
 	if g.tick%60 == 0 {
 		runtime.ReadMemStats(&g.memStat)

@@ -1,13 +1,14 @@
 package resource
 
 import (
+	"bytes"
 	_ "embed"
 	"fmt"
 	_ "image/png"
 	"io/ioutil"
 
-	"github.com/hajimehoshi/ebiten/audio"
-	"github.com/hajimehoshi/ebiten/audio/mp3"
+	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
 )
 
 // Raw data fo background music.
@@ -67,8 +68,8 @@ type soundEffect struct {
 
 func loadSoundEffect(resources map[SoundEffectID][]byte) (*soundEffect, error) {
 	se := &soundEffect{}
-	for k, v := range resources {
-		s, err := mp3.Decode(audioContext, audio.BytesReadSeekCloser(v))
+	for id, data := range resources {
+		s, err := mp3.DecodeWithSampleRate(sampleRate, bytes.NewReader(data))
 		if err != nil {
 			return nil, err
 		}
@@ -76,7 +77,7 @@ func loadSoundEffect(resources map[SoundEffectID][]byte) (*soundEffect, error) {
 		if err != nil {
 			return nil, err
 		}
-		se.source[k] = src
+		se.source[id] = src
 	}
 	for i, s := range se.source {
 		if s == nil {
@@ -88,7 +89,7 @@ func loadSoundEffect(resources map[SoundEffectID][]byte) (*soundEffect, error) {
 
 // Play plays the specified SE.
 func (s *soundEffect) Play(id SoundEffectID) {
-	p, _ := audio.NewPlayerFromBytes(audioContext, s.source[id])
+	p := audio.NewPlayerFromBytes(audioContext, s.source[id])
 	p.SetVolume(SEVolume)
 	p.Play()
 	// TODO: Should the player be closed?
@@ -101,8 +102,8 @@ type backgroundMusic struct {
 
 func loadBackgroundMusic(resources map[BackgroundMusicID][]byte) (*backgroundMusic, error) {
 	bgm := &backgroundMusic{}
-	for k, v := range resources {
-		s, err := mp3.Decode(audioContext, audio.BytesReadSeekCloser(v))
+	for id, data := range resources {
+		s, err := mp3.DecodeWithSampleRate(sampleRate, bytes.NewReader(data))
 		if err != nil {
 			return nil, err
 		}
@@ -111,7 +112,7 @@ func loadBackgroundMusic(resources map[BackgroundMusicID][]byte) (*backgroundMus
 		if err != nil {
 			return nil, err
 		}
-		bgm.players[k] = p
+		bgm.players[id] = p
 	}
 	for i, s := range bgm.players {
 		if i != int(BGMNone) && s == nil {
@@ -155,7 +156,7 @@ func (s *backgroundMusic) Pause() {
 }
 
 func init() {
-	audioContext, _ = audio.NewContext(sampleRate)
+	audioContext = audio.NewContext(sampleRate)
 
 	var err error
 	SE, err = loadSoundEffect(map[SoundEffectID][]byte{

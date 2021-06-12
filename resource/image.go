@@ -7,7 +7,7 @@ import (
 	"image"
 	_ "image/png"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 var (
@@ -53,10 +53,7 @@ func loadImage(data []byte) (*ebiten.Image, error) {
 	if err != nil {
 		return nil, err
 	}
-	ret, err := ebiten.NewImageFromImage(img, ebiten.FilterDefault)
-	if err != nil {
-		return nil, err
-	}
+	ret := ebiten.NewImageFromImage(img)
 	return ret, nil
 }
 
