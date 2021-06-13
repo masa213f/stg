@@ -1,8 +1,10 @@
 package shooting
 
 import (
+	"image/color"
 	"math/rand"
 
+	"github.com/masa213f/shootinggame/pkg/debug"
 	"github.com/masa213f/shootinggame/pkg/draw"
 	"github.com/masa213f/shootinggame/pkg/shape"
 	"github.com/masa213f/shootinggame/resource"
@@ -70,7 +72,7 @@ func (e *enemy) update() {
 func (e *enemy) draw() {
 	if e.phase == 0 {
 		draw.ImageAt(resource.ImageObake[(e.tick>>5)%4], e.drawRect.X0(), e.drawRect.Y0())
-		// debugLineX(e.hitRect, color.Black)
+		debug.DrawLineX(e.hitRect, color.Black)
 	} else if e.phase == 1 {
 		draw.ImageAt(resource.ImageEffectIce[(e.tick/2)], e.drawRect.X0(), e.drawRect.Y0())
 	}

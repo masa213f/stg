@@ -41,24 +41,6 @@ type objectID uint64
 
 const inactiveObjectID = ^objectID(0)
 
-func debugLineX(r *shape.Rect, clr color.Color) {
-	x0 := r.X0()
-	x1 := r.X1()
-	y0 := r.Y0()
-	y1 := r.Y1()
-	draw.Line(x0, y0, x1, y1, clr)
-	draw.Line(x0, y1, x1, y0, clr)
-}
-
-func debugLineV(r *shape.Rect, clr color.Color) {
-	x0 := r.X0()
-	x1 := r.X1()
-	y0 := r.Y0()
-	y1 := r.Y1()
-	draw.Line(x0, y0, x0, y1, clr)
-	draw.Line(x1, y0, x1, y1, clr)
-}
-
 const (
 	shotInterval = 3
 	bombInterval = 60

@@ -4,6 +4,7 @@ import (
 	"image/color"
 
 	"github.com/masa213f/shootinggame/pkg/constant"
+	"github.com/masa213f/shootinggame/pkg/debug"
 	"github.com/masa213f/shootinggame/pkg/draw"
 	"github.com/masa213f/shootinggame/pkg/input"
 	"github.com/masa213f/shootinggame/pkg/shape"
@@ -87,6 +88,6 @@ func (p *player) draw() {
 		return
 	}
 	draw.ImageAt(resource.ImagePlayer[(p.tick>>5)%4], p.drawRect.X0(), p.drawRect.Y0())
-	debugLineX(p.hitRect, color.White)
-	debugLineV(p.drawRect, color.White)
+	debug.DrawLineV(p.drawRect, color.White)
+	debug.DrawLineX(p.hitRect, color.White)
 }

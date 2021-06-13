@@ -5,6 +5,7 @@ import (
 	"sort"
 
 	"github.com/masa213f/shootinggame/pkg/constant"
+	"github.com/masa213f/shootinggame/pkg/debug"
 	"github.com/masa213f/shootinggame/pkg/draw"
 	"github.com/masa213f/shootinggame/pkg/shape"
 	"github.com/masa213f/shootinggame/resource"
@@ -88,7 +89,7 @@ func (list *playerShotList) drawAll() {
 			break
 		}
 		draw.ImageAt(resource.ImageShot, ent.drawRect.X0(), ent.drawRect.Y0())
-		debugLineX(ent.hitRect, color.White)
+		debug.DrawLineX(ent.hitRect, color.White)
 	}
 
 }
