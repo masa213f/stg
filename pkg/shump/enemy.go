@@ -10,9 +10,14 @@ import (
 	"github.com/masa213f/shootinggame/resource"
 )
 
+const (
+	enemyStateNormal int = iota
+	enemyStateDisappearing
+)
+
 type enemy struct {
 	tick        int
-	phase       int
+	state       int
 	disabled    bool
 	untouchable bool
 	life        int
@@ -34,7 +39,7 @@ func (e *enemy) damage(d int) (score int) {
 		return 0
 	}
 
-	e.phase = 1
+	e.state = enemyStateDisappearing
 	e.untouchable = true
 	e.tick = 0
 	return 1
@@ -42,7 +47,8 @@ func (e *enemy) damage(d int) (score int) {
 
 func (e *enemy) update() {
 	e.tick++
-	if e.phase == 0 {
+	switch e.state {
+	case enemyStateNormal:
 		// 通常移動
 		var v *shape.Vector
 		if (e.tick>>6)%2 == 0 {
@@ -57,7 +63,7 @@ func (e *enemy) update() {
 			e.disabled = true
 			e.untouchable = true
 		}
-	} else if e.phase == 1 {
+	case enemyStateDisappearing:
 		// やられた場合
 		if e.tick >= 16 {
 			e.disabled = true
@@ -70,10 +76,11 @@ func (e *enemy) update() {
 }
 
 func (e *enemy) draw() {
-	if e.phase == 0 {
+	switch e.state {
+	case enemyStateNormal:
 		draw.ImageAt(resource.ImageObake[(e.tick>>5)%4], e.drawRect.X0(), e.drawRect.Y0())
 		debug.DrawLineX(e.hitRect, color.Black)
-	} else if e.phase == 1 {
+	case enemyStateDisappearing:
 		draw.ImageAt(resource.ImageEffectIce[(e.tick/2)], e.drawRect.X0(), e.drawRect.Y0())
 	}
 }
