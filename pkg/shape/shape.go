@@ -1,4 +1,4 @@
-package shooting
+package shape
 
 import (
 	"math"

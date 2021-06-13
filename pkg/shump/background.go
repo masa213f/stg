@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/masa213f/shootinggame/pkg/constant"
 	"github.com/masa213f/shootinggame/pkg/draw"
+	"github.com/masa213f/shootinggame/pkg/shape"
 	"github.com/masa213f/shootinggame/resource"
 )
 
@@ -35,7 +36,7 @@ var cloudImageSize = [cloudImageMax]struct {
 type cloud struct {
 	id       objectID
 	image    *ebiten.Image
-	drawRect *Rect
+	drawRect *shape.Rect
 }
 
 type cloudList struct {
@@ -51,7 +52,7 @@ func newCloudList() *cloudList {
 	for i := 0; i < cloudMaxNum; i++ {
 		list.buffer[i] = &cloud{
 			id:       inactiveObjectID,
-			drawRect: &Rect{},
+			drawRect: &shape.Rect{},
 		}
 	}
 	return list

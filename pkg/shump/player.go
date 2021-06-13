@@ -6,36 +6,37 @@ import (
 	"github.com/masa213f/shootinggame/pkg/constant"
 	"github.com/masa213f/shootinggame/pkg/draw"
 	"github.com/masa213f/shootinggame/pkg/input"
+	"github.com/masa213f/shootinggame/pkg/shape"
 	"github.com/masa213f/shootinggame/resource"
 )
 
 type player struct {
-	tick           int    // 汎用的なカウンタ
-	invincible     bool   // 無敵状態
-	invincibleTime int    // 無敵状態の持続時間
-	centor         *Point // 自機の中心(自機ショットの開始位置)
-	hitRect        *Rect  // 当たり範囲
-	drawRect       *Rect  // 描画範囲
-	speedTable     [9]*Vector
+	tick           int          // 汎用的なカウンタ
+	invincible     bool         // 無敵状態
+	invincibleTime int          // 無敵状態の持続時間
+	centor         *shape.Point // 自機の中心(自機ショットの開始位置)
+	hitRect        *shape.Rect  // 当たり範囲
+	drawRect       *shape.Rect  // 描画範囲
+	speedTable     [9]*shape.Vector
 }
 
 var speed = 4
 
 func newPlayer(x, y int) *player {
 	return &player{
-		centor:   NewPoint(x, y),
-		hitRect:  NewRect(x-4, y-4, 8, 8),
-		drawRect: NewRect(x-16, y-20, 32, 32),
-		speedTable: [9]*Vector{
-			input.MoveNone:       NewVectorP(0, 0),
-			input.MoveRight:      NewVectorP(speed, 0),
-			input.MoveLowerRight: NewVectorP(speed, 45),
-			input.MoveDown:       NewVectorP(speed, 90),
-			input.MoveLowerLeft:  NewVectorP(speed, 135),
-			input.MoveLeft:       NewVectorP(speed, 180),
-			input.MoveUpperLeft:  NewVectorP(speed, 225),
-			input.MoveUp:         NewVectorP(speed, 270),
-			input.MoveUpperRight: NewVectorP(speed, 315),
+		centor:   shape.NewPoint(x, y),
+		hitRect:  shape.NewRect(x-4, y-4, 8, 8),
+		drawRect: shape.NewRect(x-16, y-20, 32, 32),
+		speedTable: [9]*shape.Vector{
+			input.MoveNone:       shape.NewVectorP(0, 0),
+			input.MoveRight:      shape.NewVectorP(speed, 0),
+			input.MoveLowerRight: shape.NewVectorP(speed, 45),
+			input.MoveDown:       shape.NewVectorP(speed, 90),
+			input.MoveLowerLeft:  shape.NewVectorP(speed, 135),
+			input.MoveLeft:       shape.NewVectorP(speed, 180),
+			input.MoveUpperLeft:  shape.NewVectorP(speed, 225),
+			input.MoveUp:         shape.NewVectorP(speed, 270),
+			input.MoveUpperRight: shape.NewVectorP(speed, 315),
 		},
 	}
 }
@@ -74,7 +75,7 @@ func (p *player) update() {
 	}
 
 	// 画面外に出た場合の調整
-	v := NewVector(vx, vy)
+	v := shape.NewVector(vx, vy)
 	p.centor.Move(v)
 	p.hitRect.Move(v)
 	p.drawRect.Move(v)

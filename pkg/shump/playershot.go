@@ -6,6 +6,7 @@ import (
 
 	"github.com/masa213f/shootinggame/pkg/constant"
 	"github.com/masa213f/shootinggame/pkg/draw"
+	"github.com/masa213f/shootinggame/pkg/shape"
 	"github.com/masa213f/shootinggame/resource"
 )
 
@@ -13,9 +14,9 @@ const playerShotMaxNum = 100
 
 type playerShot struct {
 	id       objectID
-	speed    *Vector
-	hitRect  *Rect
-	drawRect *Rect
+	speed    *shape.Vector
+	hitRect  *shape.Rect
+	drawRect *shape.Rect
 }
 
 func (ps *playerShot) update() {
@@ -36,9 +37,9 @@ func newPlayerShotList() *playerShotList {
 	for i := 0; i < playerShotMaxNum; i++ {
 		list.buffer[i] = &playerShot{
 			id:       inactiveObjectID,
-			speed:    &Vector{},
-			hitRect:  &Rect{},
-			drawRect: &Rect{},
+			speed:    &shape.Vector{},
+			hitRect:  &shape.Rect{},
+			drawRect: &shape.Rect{},
 		}
 	}
 	return list

@@ -1,17 +1,21 @@
 package shooting
 
-import "image/color"
+import (
+	"image/color"
+
+	"github.com/masa213f/shootinggame/pkg/shape"
+)
 
 type playerBomb struct {
 	tick    int
 	x       int
 	y       int
-	hitRect *Rect
+	hitRect *shape.Rect
 }
 
 func newPlayerBomb() *playerBomb {
 	return &playerBomb{
-		hitRect: &Rect{},
+		hitRect: &shape.Rect{},
 	}
 }
 

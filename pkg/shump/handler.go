@@ -9,6 +9,7 @@ import (
 	"github.com/masa213f/shootinggame/pkg/constant"
 	"github.com/masa213f/shootinggame/pkg/draw"
 	"github.com/masa213f/shootinggame/pkg/input"
+	"github.com/masa213f/shootinggame/pkg/shape"
 	"github.com/masa213f/shootinggame/resource"
 )
 
@@ -40,7 +41,7 @@ type objectID uint64
 
 const inactiveObjectID = ^objectID(0)
 
-func debugLineX(r *Rect, clr color.Color) {
+func debugLineX(r *shape.Rect, clr color.Color) {
 	x0 := r.X0()
 	x1 := r.X1()
 	y0 := r.Y0()
@@ -49,7 +50,7 @@ func debugLineX(r *Rect, clr color.Color) {
 	draw.Line(x0, y1, x1, y0, clr)
 }
 
-func debugLineV(r *Rect, clr color.Color) {
+func debugLineV(r *shape.Rect, clr color.Color) {
 	x0 := r.X0()
 	x1 := r.X1()
 	y0 := r.Y0()
@@ -151,7 +152,7 @@ func (h *Handler) Update() error {
 				if e.untouchable {
 					continue
 				}
-				if Overlap(h.playerBomb.hitRect, e.hitRect) {
+				if shape.Overlap(h.playerBomb.hitRect, e.hitRect) {
 					resource.SE.Play(resource.SEHit)
 					h.score += e.damage(1)
 				}
@@ -173,7 +174,7 @@ func (h *Handler) Update() error {
 				if e.untouchable {
 					continue
 				}
-				if Overlap(ps.hitRect, e.hitRect) {
+				if shape.Overlap(ps.hitRect, e.hitRect) {
 					resource.SE.Play(resource.SEHit)
 					h.score += e.damage(1)
 
@@ -193,7 +194,7 @@ func (h *Handler) Update() error {
 
 			// 自機 <-> 敵 の当たり判定
 			// プレイヤーが無敵 又は ボム実行中はスキップする
-			if !e.disabled && !h.player.invincible && Overlap(e.hitRect, h.player.hitRect) {
+			if !e.disabled && !h.player.invincible && shape.Overlap(e.hitRect, h.player.hitRect) {
 				resource.SE.Play(resource.SEDamage)
 				e.damage(1)
 				h.player.damage()

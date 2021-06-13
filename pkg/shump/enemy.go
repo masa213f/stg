@@ -4,6 +4,7 @@ import (
 	"math/rand"
 
 	"github.com/masa213f/shootinggame/pkg/draw"
+	"github.com/masa213f/shootinggame/pkg/shape"
 	"github.com/masa213f/shootinggame/resource"
 )
 
@@ -13,15 +14,15 @@ type enemy struct {
 	disabled    bool
 	untouchable bool
 	life        int
-	hitRect     *Rect
-	drawRect    *Rect
+	hitRect     *shape.Rect
+	drawRect    *shape.Rect
 }
 
 func newEnemy(x, y int) *enemy {
 	return &enemy{
 		life:     rand.Intn(3) + 1,
-		hitRect:  NewRect(x-8, y-8, 16, 16),
-		drawRect: NewRect(x-16, y-16, 32, 32),
+		hitRect:  shape.NewRect(x-8, y-8, 16, 16),
+		drawRect: shape.NewRect(x-16, y-16, 32, 32),
 	}
 }
 
@@ -41,11 +42,11 @@ func (e *enemy) update() {
 	e.tick++
 	if e.phase == 0 {
 		// 通常移動
-		var v *Vector
+		var v *shape.Vector
 		if (e.tick>>6)%2 == 0 {
-			v = NewVector(-1, 1)
+			v = shape.NewVector(-1, 1)
 		} else {
-			v = NewVector(-1, -1)
+			v = shape.NewVector(-1, -1)
 		}
 		e.hitRect.Move(v)
 		e.drawRect.Move(v)
@@ -60,7 +61,7 @@ func (e *enemy) update() {
 			e.disabled = true
 			e.untouchable = true
 		}
-		v := NewVector(0, -2)
+		v := shape.NewVector(0, -2)
 		e.hitRect.Move(v)
 		e.drawRect.Move(v)
 	}
