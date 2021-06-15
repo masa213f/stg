@@ -80,6 +80,7 @@ func (h *Handler) Init() {
 	h.player = newPlayer(100, constant.ScreenHeight/2)
 	h.playerBomb = newPlayerBomb()
 	h.playerShots = newPlayerShotList()
+	h.enemyList = []*enemy{}
 }
 
 // Update updates game objects. This function is called every frame.
