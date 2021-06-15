@@ -33,7 +33,7 @@ func init() {
 func main() {
 	flag.Parse()
 	if versionOpt {
-		fmt.Println("v" + version)
+		fmt.Println(version)
 		os.Exit(0)
 	}
 	debug.SetMode(debugOpt)

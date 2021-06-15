@@ -1,11 +1,11 @@
-VERSION = devel
-TARGET_NAME = stg.exe
-TARGET_OS=windows
-TARGET_ARCH=amd64
+VERSION := devel
+TARGET_EXE_NAME := stg.exe
+TARGET_ZIP_NAME := stg-$(VERSION).zip
+TARGET_OS := windows
+TARGET_ARCH := amd64
 
-PROJECT_DIR := $(CURDIR)
-TMP_DIR := $(PROJECT_DIR)/tmp
-BIN_DIR := $(TMP_DIR)/bin
+BIN_DIR := $(CURDIR)/bin
+OUT_DIR := $(CURDIR)/out
 
 GOIMPORTS := $(BIN_DIR)/goimports
 STATICCHECK := $(BIN_DIR)/staticcheck
@@ -23,14 +23,18 @@ setup: ## Setup necessary tools.
 
 .PHONY: clean
 clean: ## Clean files.
-	rm -rf $(TMP_DIR)/*
-	-rmdir $(TMP_DIR)
+	rm -rf $(BIN_DIR)/* $(OUT_DIR)/*
+	-rmdir $(BIN_DIR) $(OUT_DIR)
 
 ## Build
 
 .PHONY: build
 build:
-	GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go build -trimpath -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN_DIR)/$(TARGET_NAME) ./cmd/game
+	GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go build -trimpath -ldflags "-s -w -X main.version=$(VERSION)" -o $(OUT_DIR)/$(TARGET_EXE_NAME) ./cmd/game
+
+.PHONY: zip
+zip:
+	zip -j $(OUT_DIR)/$(TARGET_ZIP_NAME) $(OUT_DIR)/$(TARGET_EXE_NAME)
 
 ## Test
 
@@ -51,4 +55,4 @@ test:
 
 .PHONY: run
 run:
-	$(BIN_DIR)/$(TARGET_NAME)
+	$(OUT_DIR)/$(TARGET_EXE_NAME)

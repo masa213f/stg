@@ -14,26 +14,15 @@ jobs:
         with:
           go-version: 1.16
       - run: make setup
-      - run: make build VERSION=${GITHUB_REF#refs/tags/v}
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
+      - run: make build VERSION=${GITHUB_REF#refs/tags/}
+      - run: make zip VERSION=${GITHUB_REF#refs/tags/}
+      - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            See [README.md](./README.md).
-          draft: false
-          prerelease: ${{ contains(github.ref, '-') }}
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./tmp/bin/stg.exe
-          asset_name: stg.exe
-          asset_content_type: application/zip
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          if echo ${{ github.ref }} | grep -q -e '-'; then PRERELEASE=-p; fi
+          gh release create \
+            -t "Release $VERSION" $PRERELEASE \
+            -n "See [README.md](./README.md)." \
+            "$VERSION" out/*.zip

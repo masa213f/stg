@@ -10,9 +10,10 @@ This is just in development. (Maybe forever.)
 
 ## Usage
 
-### How to download
+### How to get
 
-Click the `stg.exe` file from [the latest release page](https://github.com/masa213f/shooting-game/releases/latest).
+1. Download the `stg-<VERSION>.zip` file from [the latest release page](https://github.com/masa213f/shooting-game/releases/latest).
+2. Unzip the downloaded file.
 
 ### Controls
 
