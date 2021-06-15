@@ -13,24 +13,18 @@ import (
 	"github.com/masa213f/shootinggame/resource"
 )
 
-// 更新及び描画する何か
+// 更新及び描画するオブジェクト(括弧内はオブジェクト数)
 // - 背景(1)
 // - ステータス(1)
-
-// 更新及び描画するオブジェクト(括弧内はオブジェクト数)
 // - 自機(1)
 // - 自機ボム(0～1)
 // - 自機ショット(0～多数)
 // - 敵(0～多数)
-// - 敵ショット(0～多数)
-// - 障害物(0～多数)
 
 // 当たり判定の種類、判定順序
-// 1. 自機ボム     -> 敵、敵ショット ... 敵にダメージ。敵ショットは消滅。
+// 1. 自機ボム     -> 敵             ... 敵にダメージ。は消滅。
 // 2. 自機ショット -> 敵             ... 敵にダメージ。自機ショットは消滅。
 // 3. 敵           -> 自機           ... 自機、敵共にダメージ。
-// 4. 敵ショット   -> 自機           ... 自機にダメージ。敵ショットは消滅。
-// 5. 障害物       -> 自機           ... ダメージなし。障害物の移動に合わせて、自機も移動。挟まれると自機にダメージ。
 
 // オブジェクトの状態
 // - 通常 ... 更新、描画及び当たり判定を実施。
@@ -46,10 +40,10 @@ const (
 	bombInterval = 60
 )
 
-// Handler はシューティングゲームをハンドリングするための構造体
+// Handler is a object for managing a game.
 type Handler struct {
 	tick          int // 汎用的なカウンタ
-	enemyInterval int
+	enemyInterval int // 次に敵が出現するまでのフレーム数
 	shotWait      int // 次にショットが打てるようになるまでの待ちフレーム数
 	bombWait      int // 次にボムが打てるようになるまでの待ちフレーム数
 
@@ -65,14 +59,14 @@ type Handler struct {
 	enemyList   []*enemy
 }
 
-// NewHandler ...
+// NewHandler returns a new Hander struct.
 func NewHandler() *Handler {
 	h := &Handler{}
 	h.Init()
 	return h
 }
 
-// Init ...
+// Init initializes the Handler struct.
 func (h *Handler) Init() {
 	h.tick = 0
 	h.enemyInterval = 0
@@ -88,23 +82,23 @@ func (h *Handler) Init() {
 	h.playerShots = newPlayerShotList()
 }
 
-// Update ...
+// Update updates game objects. This function is called every frame.
 func (h *Handler) Update() error {
 	h.tick++
 	h.background.update()
 
-	{
-		if h.tick == 1 {
-			resource.BGM.Reset(resource.BGMPlay)
-		}
-		h.enemyInterval--
-		if h.enemyInterval < 0 {
-			h.enemyInterval = 5
-			h.enemyList = append(h.enemyList, newEnemy(constant.ScreenWidth+16, rand.Intn(constant.ScreenHeight)))
-		}
+	if h.tick == 1 {
+		resource.BGM.Reset(resource.BGMPlay)
 	}
 
-	// var px, py int
+	// Create enemies.
+	h.enemyInterval--
+	if h.enemyInterval < 0 {
+		h.enemyInterval = 5
+		h.enemyList = append(h.enemyList, newEnemy(constant.ScreenWidth+16, rand.Intn(constant.ScreenHeight)))
+	}
+
+	// Move player and create player bomb and shots.
 	{
 		h.bombWait--
 		h.shotWait--
@@ -119,17 +113,18 @@ func (h *Handler) Update() error {
 		if h.shotWait < 0 && input.Shot() {
 			resource.SE.Play(resource.SEShot)
 			h.shotWait = shotInterval
-
 			h.playerShots.new(px, py, h.shotSpeed, -15)
 			h.playerShots.new(px, py, h.shotSpeed, 0)
 			h.playerShots.new(px, py, h.shotSpeed, 15)
 		}
 	}
 
+	// Update player bomb.
 	{
 		if h.bombWait >= 0 {
 			h.playerBomb.update()
 
+			// 自機ボム <-> 敵 の当たり判定
 			for _, e := range h.enemyList {
 				if e.untouchable {
 					continue
@@ -142,6 +137,7 @@ func (h *Handler) Update() error {
 		}
 	}
 
+	// Update player shots.
 	{
 	OUTER:
 		for i, ps := range h.playerShots.list() {
@@ -169,6 +165,7 @@ func (h *Handler) Update() error {
 		h.playerShots.gc()
 	}
 
+	// Update enemies.
 	{
 		for i := 0; i < len(h.enemyList); i++ {
 			e := h.enemyList[i]
@@ -197,7 +194,7 @@ func (h *Handler) Update() error {
 	return nil
 }
 
-// Draw ...
+// Draw draws game objects.
 func (h *Handler) Draw() {
 	h.background.draw()
 	h.player.draw()

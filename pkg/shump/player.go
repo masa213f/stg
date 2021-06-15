@@ -13,7 +13,7 @@ import (
 
 type player struct {
 	tick           int          // 汎用的なカウンタ
-	invincible     bool         // 無敵状態
+	invincible     bool         // 無敵状態かどうか
 	invincibleTime int          // 無敵状態の持続時間
 	centor         *shape.Point // 自機の中心(自機ショットの開始位置)
 	hitRect        *shape.Rect  // 当たり範囲
