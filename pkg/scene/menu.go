@@ -68,7 +68,7 @@ func newMenuScene() handler {
 	h := &menuSceneHandler{
 		items: newItemSelector([]item{
 			{"Play", scenePlay},
-			{"Options", sceneConfig},
+			// {"Options", sceneConfig},
 			{"Exit", sceneExit},
 		}),
 	}
