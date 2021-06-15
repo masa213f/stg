@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/masa213f/shootinggame/pkg/shape"
 	"golang.org/x/image/font"
 )
 
@@ -57,6 +58,28 @@ func Fill(clr color.Color) {
 // Line ...
 func Line(x1, y1, x2, y2 int, clr color.Color) {
 	ebitenutil.DrawLine(screen, float64(x1), float64(y1), float64(x2), float64(y2), clr)
+}
+
+// LineX
+func LineX(r *shape.Rect, clr color.Color) {
+	x0 := r.X0()
+	x1 := r.X1()
+	y0 := r.Y0()
+	y1 := r.Y1()
+	Line(x0, y0, x1, y1, clr)
+	Line(x0, y1, x1, y0, clr)
+}
+
+// Rect
+func Rect(r *shape.Rect, clr color.Color) {
+	x0 := r.X0()
+	x1 := r.X1()
+	y0 := r.Y0()
+	y1 := r.Y1()
+	Line(x0, y0, x0, y1, clr)
+	Line(x0, y1, x1, y1, clr)
+	Line(x1, y1, x1, y0, clr)
+	Line(x1, y0, x0, y0, clr)
 }
 
 // ImageAt ...

@@ -3,7 +3,7 @@ package shooting
 import (
 	"image/color"
 
-	"github.com/masa213f/shootinggame/pkg/debug"
+	"github.com/masa213f/shootinggame/pkg/draw"
 	"github.com/masa213f/shootinggame/pkg/shape"
 )
 
@@ -34,6 +34,6 @@ func (pb *playerBomb) update() {
 
 func (pb *playerBomb) draw() {
 	// TODO
-	debug.DrawLineV(pb.hitRect, color.Black)
-	debug.DrawLineX(pb.hitRect, color.Black)
+	draw.Rect(pb.hitRect, color.Black)
+	draw.LineX(pb.hitRect, color.Black)
 }
