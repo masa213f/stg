@@ -1,4 +1,4 @@
-VERSION = 0.1.0
+VERSION = devel
 TARGET_NAME = stg.exe
 TARGET_OS=windows
 TARGET_ARCH=amd64
