@@ -35,6 +35,16 @@ $ make build
 $ make run
 ```
 
+### Release
+
+```bash
+$ VERSION=x.y.z
+$ git checkout main
+$ git pull
+$ git tag -a -m "Release v$VERSION" "v$VERSION"
+$ git push origin "v$VERSION"
+```
+
 ## Special thanks
 
 This program uses some resources published from the following sites.
