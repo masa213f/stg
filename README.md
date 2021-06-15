@@ -8,6 +8,23 @@ This is just in development. (Maybe forever.)
 [Ebiten]: https://ebiten.org/
 [Go]: https://golang.org/
 
+## Usage
+
+### How to download
+
+Click the `stg.exe` file from [the latest release page](https://github.com/masa213f/shooting-game/releases/latest).
+
+### Controls
+
+- arrow keys : Move
+- `z` : Shoot / OK
+- `x` : Bomb / Cancel (Back)
+- space : pause
+
+### Screenshot
+
+![screenshot](./docs/image/screenshot.png "screenshot")
+
 ## Development
 
 ### Preparation

@@ -9,8 +9,7 @@ import (
 // arrow keys : Move
 // z : Shoot
 // x : Bomb
-// shift : Slowdown movement
-// escape : pause
+// space : pause
 
 // z : OK
 // x : Cancel(Back)
