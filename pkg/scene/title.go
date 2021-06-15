@@ -27,5 +27,5 @@ func (h *titleSceneHandler) draw() {
 	draw.MultiText(resource.FontArcade, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignMiddle,
 		[]string{"Shooting", "press z key"})
 	draw.Text(resource.FontArcadeSmall, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignBottom,
-		"Copyright (c) 2019 Masayuki Ishii")
+		"Copyright (c) 2021 masa213f")
 }
