@@ -32,8 +32,8 @@ var (
 )
 
 const (
-	BGMVolume  = 1
-	SEVolume   = 1
+	BGMVolume  = 0.1
+	SEVolume   = 0.1
 	sampleRate = 44100
 )
 
@@ -130,6 +130,7 @@ func (s *backgroundMusic) Reset(id BackgroundMusicID) {
 	}
 
 	if id != BGMNone {
+		s.players[id].SetVolume(BGMVolume)
 		s.players[id].Play()
 	}
 
@@ -144,6 +145,7 @@ func (s *backgroundMusic) Play() {
 	if s.players[s.currentBGM].IsPlaying() {
 		return
 	}
+	s.players[s.currentBGM].SetVolume(BGMVolume)
 	s.players[s.currentBGM].Play()
 }
 
