@@ -1,7 +1,7 @@
 # Shooting Game
 
 This is a side scrolling shoot 'em up game running on Windows 10.
-It is written in [Go]() and with [Ebiten]() game library.
+It is written in [Go][] and with [Ebiten][] game library.
 
 This is just in development. (Maybe forever.)
 

@@ -24,7 +24,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           body: |
-            See [CHANGELOG.md](./CHANGELOG.md) for details.
+            See [README.md](./README.md).
           draft: false
           prerelease: ${{ contains(github.ref, '-') }}
       - name: Upload Release Asset
