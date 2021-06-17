@@ -88,7 +88,7 @@ func (h *menuSceneHandler) update(priv id) id {
 		h.items.last()
 		return sceneMenu
 	}
-	switch input.MenuUpOrDown() {
+	switch input.UpOrDown() {
 	case input.MoveUp:
 		h.items.priv()
 	case input.MoveDown:

@@ -64,6 +64,7 @@ var defaultGamepadConfig = gamepadConfig{
 
 const defaultGamepadID = 0
 
+// moveControl represents a direction of input.
 type moveControl uint
 
 const (
@@ -73,6 +74,7 @@ const (
 	bitDown  moveControl = 8 // 1000
 )
 
+// MoveAction represents a direction of movement in a game.
 type MoveAction uint
 
 const (
@@ -87,7 +89,7 @@ const (
 	MoveLowerRight
 )
 
-// ゲーム中の移動(8方向)
+// table of input values and directions of movement in the game.
 var gameMoveTable = [16]MoveAction{
 	MoveNone,       // 0  :0000
 	MoveLeft,       // 1  :0001
@@ -107,8 +109,8 @@ var gameMoveTable = [16]MoveAction{
 	MoveNone,       // 15 :1111
 }
 
-// 8方向
-func GameMove() MoveAction {
+// Move returns movement in 8 directions.
+func Move() MoveAction {
 	var ctrl moveControl
 
 	// keyboard
@@ -142,8 +144,8 @@ func GameMove() MoveAction {
 	return gameMoveTable[ctrl]
 }
 
-// 上下移動だけ
-func MenuUpOrDown() MoveAction {
+// UpOrDown returns the vertical movement.
+func UpOrDown() MoveAction {
 	up := inpututil.KeyPressDuration(defaultKeyboardConfig.Up)
 	down := inpututil.KeyPressDuration(defaultKeyboardConfig.Down)
 

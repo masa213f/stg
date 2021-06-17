@@ -50,7 +50,7 @@ func main() {
 	}
 }
 
-// Game ...
+// Game stores information about the game.
 type Game struct {
 	tick           uint64
 	memStat        runtime.MemStats
@@ -61,12 +61,12 @@ type Game struct {
 	manager        *scene.Manager
 }
 
-// Layout ...
+// Layout returns screen size.
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return constant.ScreenWidth, constant.ScreenHeight
 }
 
-// Update ...
+// Update updates a game.
 func (g *Game) Update() error {
 	g.tick++
 	if debug.GetMode() && g.tick%60 == 0 {
@@ -85,7 +85,7 @@ func bToMib(b uint64) uint64 {
 	return b / 1024 / 1024
 }
 
-// Draw ...
+// Draw draws the game screen.
 func (g *Game) Draw(screen *ebiten.Image) {
 	draw.SetScreen(screen)
 	g.manager.Draw()

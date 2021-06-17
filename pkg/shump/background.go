@@ -11,19 +11,15 @@ import (
 	"github.com/masa213f/stg/resource"
 )
 
-// 雲の移動速度
 const cloudSpeed = 4
 
-// 生成可能な雲の最大数
+// Maximum number of clouds that can be generated
 const cloudMaxNum = 1000
 
-// 雲の画像の数
 const cloudImageMax = 3
 
-// 雲のイメージの一覧
 var cloudImage = resource.ImageCloud
 
-// 雲のイメージのサイズ
 var cloudImageSize = [cloudImageMax]struct {
 	w int
 	h int
@@ -100,7 +96,7 @@ func newBackground() *background {
 	b := &background{
 		clouds: newCloudList(),
 	}
-	// ゲーム開始時に表示される雲を準備する
+	// Prepare the clouds that will be displayed at the beginning of the game.
 	for i := -100; i < constant.ScreenWidth; i += cloudSpeed {
 		b.clouds.new(rand.Intn(cloudImageMax), i, constant.ScreenHeight-100+rand.Intn(100))
 	}

@@ -12,12 +12,12 @@ import (
 )
 
 type player struct {
-	tick           int          // 汎用的なカウンタ
-	invincible     bool         // 無敵状態かどうか
-	invincibleTime int          // 無敵状態の持続時間
-	centor         *shape.Point // 自機の中心(自機ショットの開始位置)
-	hitRect        *shape.Rect  // 当たり範囲
-	drawRect       *shape.Rect  // 描画範囲
+	tick           int
+	invincible     bool
+	invincibleTime int          // Invincible duration.
+	centor         *shape.Point // Center of the player (start position of a player shot)
+	hitRect        *shape.Rect
+	drawRect       *shape.Rect
 	speedTable     [9]*shape.Vector
 }
 
@@ -57,12 +57,12 @@ func (p *player) update() {
 		}
 	}
 
-	// 移動
-	p.centor.Move(p.speedTable[input.GameMove()])
-	p.hitRect.Move(p.speedTable[input.GameMove()])
-	p.drawRect.Move(p.speedTable[input.GameMove()])
+	// Move
+	p.centor.Move(p.speedTable[input.Move()])
+	p.hitRect.Move(p.speedTable[input.Move()])
+	p.drawRect.Move(p.speedTable[input.Move()])
 
-	// 画面外に出た場合の調整量の計算
+	// Calculation of adjustment amount when going out of the screen.
 	var vx, vy int
 	if p.hitRect.X0() < 0 {
 		vx = -p.hitRect.X0()
@@ -75,7 +75,7 @@ func (p *player) update() {
 		vy = constant.ScreenHeight - p.hitRect.Y1()
 	}
 
-	// 画面外に出た場合の調整
+	// Adjustment when going out of the screen.
 	v := shape.NewVector(vx, vy)
 	p.centor.Move(v)
 	p.hitRect.Move(v)
@@ -84,7 +84,7 @@ func (p *player) update() {
 
 func (p *player) draw() {
 	if p.invincible && p.tick>>3%2 == 0 {
-		// 無敵状態の場合は点滅する
+		// Flashes when invincible.
 		return
 	}
 	draw.ImageAt(resource.ImagePlayer[(p.tick>>5)%4], p.drawRect.X0(), p.drawRect.Y0())

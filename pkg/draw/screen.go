@@ -22,45 +22,45 @@ func NewFont(face font.Face, size int) *Font {
 type HorizontalAlign int
 
 const (
-	HorizontalAlignLeft   HorizontalAlign = iota // 左揃え
-	HorizontalAlignCenter                        // 左右中央揃え
-	HorizontalAlignRight                         // 右揃え
+	HorizontalAlignLeft HorizontalAlign = iota
+	HorizontalAlignCenter
+	HorizontalAlignRight
 )
 
 type VerticalAlign int
 
 const (
-	VerticalAlignTop    VerticalAlign = iota // 上揃え
-	VerticalAlignMiddle                      // 上下中央揃え
-	VerticalAlignBottom                      // 下揃え
+	VerticalAlignTop VerticalAlign = iota
+	VerticalAlignMiddle
+	VerticalAlignBottom
 )
 
 var screen *ebiten.Image
 var screenWidth int
 var screenHeight int
 
-// SetScreen は描画先イメージをセットするための関数。
+// SetScreen set a screen to draw on.
 func SetScreen(img *ebiten.Image) {
 	screen = img
 }
 
-// SetScreenSize は描画先イメージのサイズをセットする関数。
+// SetScreen set size of screen.
 func SetScreenSize(w, h int) {
 	screenWidth = w
 	screenHeight = h
 }
 
-// Fill は描画先イメージを指定された色で塗りつぶす。
+// Fill fills the screen image with the specified color.
 func Fill(clr color.Color) {
 	screen.Fill(clr)
 }
 
-// Line ...
+// Line draws a line.
 func Line(x1, y1, x2, y2 int, clr color.Color) {
 	ebitenutil.DrawLine(screen, float64(x1), float64(y1), float64(x2), float64(y2), clr)
 }
 
-// LineX
+// LineX draws the diagonal of the specified rect.
 func LineX(r *shape.Rect, clr color.Color) {
 	x0 := r.X0()
 	x1 := r.X1()
@@ -70,7 +70,7 @@ func LineX(r *shape.Rect, clr color.Color) {
 	Line(x0, y1, x1, y0, clr)
 }
 
-// Rect
+// Rect draws the specified rect.
 func Rect(r *shape.Rect, clr color.Color) {
 	x0 := r.X0()
 	x1 := r.X1()
@@ -82,14 +82,14 @@ func Rect(r *shape.Rect, clr color.Color) {
 	Line(x1, y0, x0, y0, clr)
 }
 
-// ImageAt ...
+// ImageAt draws an image at the specified coordinates.
 func ImageAt(img *ebiten.Image, x, y int) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(x), float64(y))
 	screen.DrawImage(img, op)
 }
 
-// Text ...
+// Text prints a single line string.
 func Text(f *Font, clr color.Color, hAlign HorizontalAlign, vAlign VerticalAlign, line string) {
 	var x int
 	switch hAlign {
@@ -112,7 +112,7 @@ func Text(f *Font, clr color.Color, hAlign HorizontalAlign, vAlign VerticalAlign
 	text.Draw(screen, line, f.face, x, y, clr)
 }
 
-// MultiText ...
+// MultiText prints multi-line string.
 func MultiText(f *Font, clr color.Color, hAlign HorizontalAlign, vAlign VerticalAlign, texts []string) {
 	var y0 int
 	switch vAlign {

@@ -17,6 +17,7 @@ var (
 	DrawLineV func(r *shape.Rect, clr color.Color)
 )
 
+// SetMode toggles debug mode.
 func SetMode(flag bool) {
 	debugMode = flag
 	if debugMode {
@@ -30,6 +31,7 @@ func SetMode(flag bool) {
 	}
 }
 
+// GetMode Returns whether in debug mode or not.
 func GetMode() bool {
 	return debugMode
 }

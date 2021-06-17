@@ -49,7 +49,6 @@ func (e *enemy) update() {
 	e.tick++
 	switch e.state {
 	case enemyStateNormal:
-		// 通常移動
 		var v *shape.Vector
 		if (e.tick>>6)%2 == 0 {
 			v = shape.NewVector(-1, 1)
@@ -59,12 +58,12 @@ func (e *enemy) update() {
 		e.hitRect.Move(v)
 		e.drawRect.Move(v)
 		if e.drawRect.X1() <= 0 {
-			// 画面外に出た場合、敵は消滅
+			// When going off the screen, the enemy disappears.
 			e.disabled = true
 			e.untouchable = true
 		}
+
 	case enemyStateDisappearing:
-		// やられた場合
 		if e.tick >= 16 {
 			e.disabled = true
 			e.untouchable = true
