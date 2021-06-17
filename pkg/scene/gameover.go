@@ -3,9 +3,9 @@ package scene
 import (
 	"image/color"
 
-	"github.com/masa213f/shootinggame/pkg/draw"
-	"github.com/masa213f/shootinggame/pkg/input"
-	"github.com/masa213f/shootinggame/resource"
+	"github.com/masa213f/stg/pkg/draw"
+	"github.com/masa213f/stg/pkg/input"
+	"github.com/masa213f/stg/resource"
 )
 
 type gameOverSceneHandler struct {

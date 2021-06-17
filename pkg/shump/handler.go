@@ -6,11 +6,11 @@ import (
 	"image/color"
 	"math/rand"
 
-	"github.com/masa213f/shootinggame/pkg/constant"
-	"github.com/masa213f/shootinggame/pkg/draw"
-	"github.com/masa213f/shootinggame/pkg/input"
-	"github.com/masa213f/shootinggame/pkg/shape"
-	"github.com/masa213f/shootinggame/resource"
+	"github.com/masa213f/stg/pkg/constant"
+	"github.com/masa213f/stg/pkg/draw"
+	"github.com/masa213f/stg/pkg/input"
+	"github.com/masa213f/stg/pkg/shape"
+	"github.com/masa213f/stg/resource"
 )
 
 // 更新及び描画するオブジェクト(括弧内はオブジェクト数)

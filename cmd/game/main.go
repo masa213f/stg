@@ -11,10 +11,10 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/masa213f/shootinggame/pkg/constant"
-	"github.com/masa213f/shootinggame/pkg/debug"
-	"github.com/masa213f/shootinggame/pkg/draw"
-	"github.com/masa213f/shootinggame/pkg/scene"
+	"github.com/masa213f/stg/pkg/constant"
+	"github.com/masa213f/stg/pkg/debug"
+	"github.com/masa213f/stg/pkg/draw"
+	"github.com/masa213f/stg/pkg/scene"
 )
 
 var version string

@@ -6,7 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text"
-	"github.com/masa213f/shootinggame/pkg/shape"
+	"github.com/masa213f/stg/pkg/shape"
 	"golang.org/x/image/font"
 )
 

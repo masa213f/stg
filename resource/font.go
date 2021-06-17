@@ -4,7 +4,7 @@ import (
 	_ "embed"
 
 	"github.com/golang/freetype/truetype"
-	"github.com/masa213f/shootinggame/pkg/draw"
+	"github.com/masa213f/stg/pkg/draw"
 	"golang.org/x/image/font"
 )
 

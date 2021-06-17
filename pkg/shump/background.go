@@ -5,10 +5,10 @@ import (
 	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/masa213f/shootinggame/pkg/constant"
-	"github.com/masa213f/shootinggame/pkg/draw"
-	"github.com/masa213f/shootinggame/pkg/shape"
-	"github.com/masa213f/shootinggame/resource"
+	"github.com/masa213f/stg/pkg/constant"
+	"github.com/masa213f/stg/pkg/draw"
+	"github.com/masa213f/stg/pkg/shape"
+	"github.com/masa213f/stg/resource"
 )
 
 // 雲の移動速度

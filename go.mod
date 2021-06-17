@@ -1,4 +1,4 @@
-module github.com/masa213f/shootinggame
+module github.com/masa213f/stg
 
 go 1.16
 

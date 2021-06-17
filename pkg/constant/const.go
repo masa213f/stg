@@ -2,7 +2,7 @@ package constant
 
 const (
 	// WindowTitle ...
-	WindowTitle = "shooting"
+	WindowTitle = "stg"
 
 	// WindowWidth ...
 	WindowWidth = 1024 // 4 * 256

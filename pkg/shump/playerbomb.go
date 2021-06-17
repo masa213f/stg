@@ -3,8 +3,8 @@ package shooting
 import (
 	"image/color"
 
-	"github.com/masa213f/shootinggame/pkg/draw"
-	"github.com/masa213f/shootinggame/pkg/shape"
+	"github.com/masa213f/stg/pkg/draw"
+	"github.com/masa213f/stg/pkg/shape"
 )
 
 type playerBomb struct {

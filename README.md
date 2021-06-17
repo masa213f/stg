@@ -12,7 +12,7 @@ This is just in development. (Maybe forever.)
 
 ### How to get
 
-1. Download the `stg-<VERSION>.zip` file from [the latest release page](https://github.com/masa213f/shooting-game/releases/latest).
+1. Download the `stg-<VERSION>.zip` file from [the latest release page](https://github.com/masa213f/stg/releases/latest).
 2. Unzip the downloaded file.
 
 ### Controls
@@ -41,8 +41,8 @@ Checkout this repository.
 
 ```bash
 $ cd ${GOPATH}/src/github.com/masa213f/
-$ git clone git@github.com:masa213f/shooting-game.git
-$ cd shooting-game
+$ git clone git@github.com:masa213f/stg.git
+$ cd stg
 $ make setup
 ```
 

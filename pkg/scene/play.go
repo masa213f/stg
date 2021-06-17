@@ -1,9 +1,9 @@
 package scene
 
 import (
-	"github.com/masa213f/shootinggame/pkg/input"
-	shooting "github.com/masa213f/shootinggame/pkg/shump"
-	"github.com/masa213f/shootinggame/resource"
+	"github.com/masa213f/stg/pkg/input"
+	shooting "github.com/masa213f/stg/pkg/shump"
+	"github.com/masa213f/stg/resource"
 )
 
 type playSceneHandler struct {
