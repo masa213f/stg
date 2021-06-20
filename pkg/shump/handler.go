@@ -10,6 +10,7 @@ import (
 	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/input"
 	"github.com/masa213f/stg/pkg/shape"
+	"github.com/masa213f/stg/pkg/sound"
 	"github.com/masa213f/stg/resource"
 )
 
@@ -87,7 +88,7 @@ func (h *Handler) Update() error {
 	h.background.Update()
 
 	if h.tick == 1 {
-		resource.BGM.Reset(resource.BGMPlay)
+		sound.BGM.Reset(resource.BGMPlay)
 	}
 
 	// Create enemies.
@@ -106,13 +107,13 @@ func (h *Handler) Update() error {
 		py := h.player.GetCentorPoint().Y()
 
 		if h.bombWait < 0 && input.Bomb() {
-			resource.SE.Play(resource.SEBomb)
+			sound.SE.Play(resource.SEBomb)
 			h.bombWait = BombDuration
 			h.playerBomb.NewBomb(px, py)
 		}
 
 		if h.shotWait < 0 && input.Shot() {
-			resource.SE.Play(resource.SEShot)
+			sound.SE.Play(resource.SEShot)
 			h.shotWait = shotInterval
 			h.playerShots.NewShot(px, py, h.shotSpeed, -15)
 			h.playerShots.NewShot(px, py, h.shotSpeed, 0)
@@ -131,7 +132,7 @@ func (h *Handler) Update() error {
 					continue
 				}
 				if shape.Overlap(h.playerBomb.GetHitRect(), e.hitRect) {
-					resource.SE.Play(resource.SEHit)
+					sound.SE.Play(resource.SEHit)
 					h.score += e.damage(1)
 				}
 			}
@@ -150,7 +151,7 @@ func (h *Handler) Update() error {
 					continue
 				}
 				if shape.Overlap(shot, e.hitRect) {
-					resource.SE.Play(resource.SEHit)
+					sound.SE.Play(resource.SEHit)
 					h.score += e.damage(1)
 
 					// the shot disappears.
@@ -170,7 +171,7 @@ func (h *Handler) Update() error {
 			// Collision detection: enemy -> player
 			// Skip while the player is invincible or a player bomb running.
 			if !e.disabled && !h.player.IsInvincible() && shape.Overlap(e.hitRect, h.player.GetHitRect()) {
-				resource.SE.Play(resource.SEDamage)
+				sound.SE.Play(resource.SEDamage)
 				e.damage(1)
 				h.player.Damage()
 				h.life--
@@ -183,7 +184,7 @@ func (h *Handler) Update() error {
 	}
 
 	if h.life == 0 {
-		resource.BGM.Pause()
+		sound.BGM.Pause()
 		return errors.New("gameover")
 	}
 

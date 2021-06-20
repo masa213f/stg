@@ -3,7 +3,7 @@ package scene
 import (
 	"github.com/masa213f/stg/pkg/input"
 	shooting "github.com/masa213f/stg/pkg/shump"
-	"github.com/masa213f/stg/resource"
+	"github.com/masa213f/stg/pkg/sound"
 )
 
 type playSceneHandler struct {
@@ -26,11 +26,11 @@ func (h *playSceneHandler) update(priv id) id {
 	}
 
 	if input.Pause() {
-		resource.BGM.Pause()
+		sound.BGM.Pause()
 		return scenePause
 	}
 
-	resource.BGM.Play()
+	sound.BGM.Play()
 	ret := h.stgHandler.Update()
 	if ret != nil {
 		return sceneGameOver

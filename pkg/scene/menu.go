@@ -5,6 +5,7 @@ import (
 
 	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/input"
+	"github.com/masa213f/stg/pkg/sound"
 	"github.com/masa213f/stg/resource"
 )
 
@@ -77,7 +78,7 @@ func newMenuScene() handler {
 
 func (h *menuSceneHandler) update(priv id) id {
 	if priv != sceneMenu {
-		resource.BGM.Reset(resource.BGMMenu)
+		sound.BGM.Reset(resource.BGMMenu)
 		h.items.first()
 	}
 
