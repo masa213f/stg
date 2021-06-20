@@ -84,12 +84,42 @@ func (h *Handler) Init() {
 
 // Update updates game objects. This function is called every frame.
 func (h *Handler) Update() error {
-	h.tick++
-	h.background.Update()
-
-	if h.tick == 1 {
+	if h.tick == 0 {
 		sound.BGM.Reset(resource.BGMPlay)
 	}
+	if h.life == 0 {
+		sound.BGM.Pause()
+		return errors.New("gameover")
+	}
+
+	h.tick++
+
+	h.background.Update()
+
+	// Move player.
+	h.player.Update()
+	px := h.player.GetCentorPoint().X()
+	py := h.player.GetCentorPoint().Y()
+
+	// Fire a player bomb.
+	h.bombWait--
+	if h.bombWait < 0 && input.Bomb() {
+		sound.SE.Play(resource.SEBomb)
+		h.bombWait = BombDuration
+		h.playerBomb.NewBomb(px, py)
+	}
+	h.playerBomb.Update()
+
+	// Fire playser shots.
+	h.shotWait--
+	if h.shotWait < 0 && input.Shot() {
+		sound.SE.Play(resource.SEShot)
+		h.shotWait = shotInterval
+		h.playerShots.NewShot(px, py, h.shotSpeed, -15)
+		h.playerShots.NewShot(px, py, h.shotSpeed, 0)
+		h.playerShots.NewShot(px, py, h.shotSpeed, 15)
+	}
+	h.playerShots.Update()
 
 	// Create enemies.
 	h.enemyInterval--
@@ -98,66 +128,34 @@ func (h *Handler) Update() error {
 		h.enemyList = append(h.enemyList, newEnemy(constant.ScreenWidth+16, rand.Intn(constant.ScreenHeight)))
 	}
 
-	// Move player and create player bomb and shots.
-	{
-		h.bombWait--
-		h.shotWait--
-		h.player.Update()
-		px := h.player.GetCentorPoint().X()
-		py := h.player.GetCentorPoint().Y()
-
-		if h.bombWait < 0 && input.Bomb() {
-			sound.SE.Play(resource.SEBomb)
-			h.bombWait = BombDuration
-			h.playerBomb.NewBomb(px, py)
-		}
-
-		if h.shotWait < 0 && input.Shot() {
-			sound.SE.Play(resource.SEShot)
-			h.shotWait = shotInterval
-			h.playerShots.NewShot(px, py, h.shotSpeed, -15)
-			h.playerShots.NewShot(px, py, h.shotSpeed, 0)
-			h.playerShots.NewShot(px, py, h.shotSpeed, 15)
-		}
-	}
-
-	// Update player bomb.
-	{
-		if h.playerBomb.IsActive() {
-			h.playerBomb.Update()
-
-			// Collision detection: player bomb -> enemy
-			for _, e := range h.enemyList {
-				if e.untouchable {
-					continue
-				}
-				if shape.Overlap(h.playerBomb.GetHitRect(), e.hitRect) {
-					sound.SE.Play(resource.SEHit)
-					h.score += e.damage(1)
-				}
+	// Collision detection: player bomb -> enemy
+	if h.playerBomb.IsActive() {
+		for _, e := range h.enemyList {
+			if e.untouchable {
+				continue
+			}
+			if shape.Overlap(h.playerBomb.GetHitRect(), e.hitRect) {
+				sound.SE.Play(resource.SEHit)
+				h.score += e.damage(1)
 			}
 		}
 	}
 
-	// Update player shots.
-	{
-		h.playerShots.Update()
-		shotsHitRects := h.playerShots.GetHitRects()
-	OUTER:
-		for i, shot := range shotsHitRects {
-			// Collision detection: player shot -> enemy
-			for _, e := range h.enemyList {
-				if e.untouchable {
-					continue
-				}
-				if shape.Overlap(shot, e.hitRect) {
-					sound.SE.Play(resource.SEHit)
-					h.score += e.damage(1)
+	// Collision detection: player shot -> enemy
+	shotsHitRects := h.playerShots.GetHitRects()
+OUTER:
+	for i, shot := range shotsHitRects {
+		for _, e := range h.enemyList {
+			if e.untouchable {
+				continue
+			}
+			if shape.Overlap(shot, e.hitRect) {
+				sound.SE.Play(resource.SEHit)
+				h.score += e.damage(1)
 
-					// the shot disappears.
-					h.playerShots.MakeInactive(i)
-					continue OUTER
-				}
+				// the shot disappears.
+				h.playerShots.MakeInactive(i)
+				continue OUTER
 			}
 		}
 	}
@@ -183,11 +181,6 @@ func (h *Handler) Update() error {
 		}
 	}
 
-	if h.life == 0 {
-		sound.BGM.Pause()
-		return errors.New("gameover")
-	}
-
 	return nil
 }
 
@@ -195,9 +188,7 @@ func (h *Handler) Update() error {
 func (h *Handler) Draw() {
 	h.background.Draw()
 	h.player.Draw()
-	if h.playerBomb.IsActive() {
-		h.playerBomb.Draw()
-	}
+	h.playerBomb.Draw()
 	h.playerShots.Draw()
 
 	for _, e := range h.enemyList {

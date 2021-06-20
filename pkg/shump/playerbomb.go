@@ -32,15 +32,19 @@ func newPlayerBomb() PlayerBomb {
 }
 
 func (bomb *playerBombImpl) Update() {
-	bomb.duration--
-	bomb.size += 3
-	bomb.hitRect.Reset(bomb.x-32-bomb.size, bomb.y-32-bomb.size, 64+bomb.size*2, 64+bomb.size*2)
+	if bomb.IsActive() {
+		bomb.duration--
+		bomb.size += 3
+		bomb.hitRect.Reset(bomb.x-32-bomb.size, bomb.y-32-bomb.size, 64+bomb.size*2, 64+bomb.size*2)
+	}
 }
 
 func (bomb *playerBombImpl) Draw() {
-	// FIXME
-	draw.Rect(bomb.hitRect, color.Black)
-	draw.LineX(bomb.hitRect, color.Black)
+	if bomb.IsActive() {
+		// FIXME
+		draw.Rect(bomb.hitRect, color.Black)
+		draw.LineX(bomb.hitRect, color.Black)
+	}
 }
 
 func (bomb *playerBombImpl) NewBomb(x, y int) {
