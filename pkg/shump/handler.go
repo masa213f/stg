@@ -54,7 +54,7 @@ type Handler struct {
 	background  Background
 	player      Player
 	playerBomb  *playerBomb
-	playerShots *playerShotList
+	playerShots PlayerShots
 	enemyList   []*enemy
 }
 
@@ -78,7 +78,7 @@ func (h *Handler) Init() {
 	h.background = newBackground()
 	h.player = newPlayer(100, constant.ScreenHeight/2)
 	h.playerBomb = newPlayerBomb()
-	h.playerShots = newPlayerShotList()
+	h.playerShots = newPlayerShots()
 	h.enemyList = []*enemy{}
 }
 
@@ -113,9 +113,9 @@ func (h *Handler) Update() error {
 		if h.shotWait < 0 && input.Shot() {
 			resource.SE.Play(resource.SEShot)
 			h.shotWait = shotInterval
-			h.playerShots.new(px, py, h.shotSpeed, -15)
-			h.playerShots.new(px, py, h.shotSpeed, 0)
-			h.playerShots.new(px, py, h.shotSpeed, 15)
+			h.playerShots.NewShot(px, py, h.shotSpeed, -15)
+			h.playerShots.NewShot(px, py, h.shotSpeed, 0)
+			h.playerShots.NewShot(px, py, h.shotSpeed, 15)
 		}
 	}
 
@@ -139,31 +139,25 @@ func (h *Handler) Update() error {
 
 	// Update player shots.
 	{
+		h.playerShots.Update()
+		shotsHitRects := h.playerShots.GetHitRects()
 	OUTER:
-		for i, ps := range h.playerShots.list() {
-			if ps.id == inactiveObjectID {
-				break
-			}
-			ps.update()
-
+		for i, shot := range shotsHitRects {
 			// Collision detection: player shot -> enemy
-			// Since it may hit an enemy outside the screen (immediately before the enemy appearance),
-			// the collision detection is performed even if the shot is off the screen.
 			for _, e := range h.enemyList {
 				if e.untouchable {
 					continue
 				}
-				if shape.Overlap(ps.hitRect, e.hitRect) {
+				if shape.Overlap(shot, e.hitRect) {
 					resource.SE.Play(resource.SEHit)
 					h.score += e.damage(1)
 
 					// the shot disappears.
-					h.playerShots.inactive(i)
+					h.playerShots.MakeInactive(i)
 					continue OUTER
 				}
 			}
 		}
-		h.playerShots.gc()
 	}
 
 	// Update enemies.
@@ -202,7 +196,7 @@ func (h *Handler) Draw() {
 	if h.bombWait >= 0 {
 		h.playerBomb.draw()
 	}
-	h.playerShots.drawAll()
+	h.playerShots.Draw()
 
 	for _, e := range h.enemyList {
 		e.draw()
