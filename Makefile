@@ -55,4 +55,4 @@ test:
 
 .PHONY: run
 run:
-	$(OUT_DIR)/$(TARGET_EXE_NAME)
+	$(OUT_DIR)/$(TARGET_EXE_NAME) -debug
