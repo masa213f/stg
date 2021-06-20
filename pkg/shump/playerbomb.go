@@ -7,33 +7,54 @@ import (
 	"github.com/masa213f/stg/pkg/shape"
 )
 
-type playerBomb struct {
-	tick    int
-	x       int
-	y       int
-	hitRect *shape.Rect
+const BombDuration = 60 // 60 frame = 1 sec
+
+type PlayerBomb interface {
+	Update()
+	Draw()
+	NewBomb(x, y int)
+	IsActive() bool
+	GetHitRect() *shape.Rect
 }
 
-func newPlayerBomb() *playerBomb {
-	return &playerBomb{
+type playerBombImpl struct {
+	duration int
+	x        int
+	y        int
+	size     int
+	hitRect  *shape.Rect
+}
+
+func newPlayerBomb() PlayerBomb {
+	return &playerBombImpl{
 		hitRect: &shape.Rect{},
 	}
 }
 
-func (pb *playerBomb) new(x, y int) {
-	pb.tick = 0
-	pb.x = x
-	pb.y = y
-	pb.hitRect.Reset(x-32, y-32, 64, 64)
+func (bomb *playerBombImpl) Update() {
+	bomb.duration--
+	bomb.size += 3
+	bomb.hitRect.Reset(bomb.x-32-bomb.size, bomb.y-32-bomb.size, 64+bomb.size*2, 64+bomb.size*2)
 }
 
-func (pb *playerBomb) update() {
-	pb.tick++
-	pb.hitRect.Reset(pb.x-32-pb.tick*3, pb.y-32-pb.tick*3, 64+pb.tick*6, 64+pb.tick*6)
+func (bomb *playerBombImpl) Draw() {
+	// FIXME
+	draw.Rect(bomb.hitRect, color.Black)
+	draw.LineX(bomb.hitRect, color.Black)
 }
 
-func (pb *playerBomb) draw() {
-	// TODO
-	draw.Rect(pb.hitRect, color.Black)
-	draw.LineX(pb.hitRect, color.Black)
+func (bomb *playerBombImpl) NewBomb(x, y int) {
+	bomb.duration = BombDuration
+	bomb.x = x
+	bomb.y = y
+	bomb.size = 0
+	bomb.hitRect.Reset(x-32, y-32, 64, 64) // FIXME: remove magic number
+}
+
+func (bomb *playerBombImpl) IsActive() bool {
+	return bomb.duration > 0
+}
+
+func (bomb *playerBombImpl) GetHitRect() *shape.Rect {
+	return bomb.hitRect
 }

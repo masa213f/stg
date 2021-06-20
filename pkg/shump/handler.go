@@ -36,7 +36,6 @@ const inactiveObjectID = ^objectID(0)
 
 const (
 	shotInterval = 3
-	bombInterval = 60
 )
 
 // Handler is a object for managing a game.
@@ -53,7 +52,7 @@ type Handler struct {
 	// game objects
 	background  Background
 	player      Player
-	playerBomb  *playerBomb
+	playerBomb  PlayerBomb
 	playerShots PlayerShots
 	enemyList   []*enemy
 }
@@ -105,11 +104,13 @@ func (h *Handler) Update() error {
 		h.player.Update()
 		px := h.player.GetCentorPoint().X()
 		py := h.player.GetCentorPoint().Y()
+
 		if h.bombWait < 0 && input.Bomb() {
 			resource.SE.Play(resource.SEBomb)
-			h.bombWait = bombInterval
-			h.playerBomb.new(px, py)
+			h.bombWait = BombDuration
+			h.playerBomb.NewBomb(px, py)
 		}
+
 		if h.shotWait < 0 && input.Shot() {
 			resource.SE.Play(resource.SEShot)
 			h.shotWait = shotInterval
@@ -121,15 +122,15 @@ func (h *Handler) Update() error {
 
 	// Update player bomb.
 	{
-		if h.bombWait >= 0 {
-			h.playerBomb.update()
+		if h.playerBomb.IsActive() {
+			h.playerBomb.Update()
 
 			// Collision detection: player bomb -> enemy
 			for _, e := range h.enemyList {
 				if e.untouchable {
 					continue
 				}
-				if shape.Overlap(h.playerBomb.hitRect, e.hitRect) {
+				if shape.Overlap(h.playerBomb.GetHitRect(), e.hitRect) {
 					resource.SE.Play(resource.SEHit)
 					h.score += e.damage(1)
 				}
@@ -193,8 +194,8 @@ func (h *Handler) Update() error {
 func (h *Handler) Draw() {
 	h.background.Draw()
 	h.player.Draw()
-	if h.bombWait >= 0 {
-		h.playerBomb.draw()
+	if h.playerBomb.IsActive() {
+		h.playerBomb.Draw()
 	}
 	h.playerShots.Draw()
 
