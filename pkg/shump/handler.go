@@ -52,7 +52,7 @@ type Handler struct {
 
 	// game objects
 	background  Background
-	player      *player
+	player      Player
 	playerBomb  *playerBomb
 	playerShots *playerShotList
 	enemyList   []*enemy
@@ -102,9 +102,9 @@ func (h *Handler) Update() error {
 	{
 		h.bombWait--
 		h.shotWait--
-		h.player.update()
-		px := h.player.centor.X()
-		py := h.player.centor.Y()
+		h.player.Update()
+		px := h.player.GetCentorPoint().X()
+		py := h.player.GetCentorPoint().Y()
 		if h.bombWait < 0 && input.Bomb() {
 			resource.SE.Play(resource.SEBomb)
 			h.bombWait = bombInterval
@@ -174,10 +174,10 @@ func (h *Handler) Update() error {
 
 			// Collision detection: enemy -> player
 			// Skip while the player is invincible or a player bomb running.
-			if !e.disabled && !h.player.invincible && shape.Overlap(e.hitRect, h.player.hitRect) {
+			if !e.disabled && !h.player.IsInvincible() && shape.Overlap(e.hitRect, h.player.GetHitRect()) {
 				resource.SE.Play(resource.SEDamage)
 				e.damage(1)
-				h.player.damage()
+				h.player.Damage()
 				h.life--
 			}
 
@@ -198,7 +198,7 @@ func (h *Handler) Update() error {
 // Draw draws game objects.
 func (h *Handler) Draw() {
 	h.background.Draw()
-	h.player.draw()
+	h.player.Draw()
 	if h.bombWait >= 0 {
 		h.playerBomb.draw()
 	}

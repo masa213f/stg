@@ -11,7 +11,16 @@ import (
 	"github.com/masa213f/stg/resource"
 )
 
-type player struct {
+type Player interface {
+	Update()
+	Draw()
+	Damage()
+	IsInvincible() bool
+	GetHitRect() *shape.Rect
+	GetCentorPoint() *shape.Point
+}
+
+type playerImpl struct {
 	tick           int
 	invincible     bool
 	invincibleTime int          // Invincible duration.
@@ -23,8 +32,8 @@ type player struct {
 
 var speed = 4
 
-func newPlayer(x, y int) *player {
-	return &player{
+func newPlayer(x, y int) Player {
+	return &playerImpl{
 		centor:   shape.NewPoint(x, y),
 		hitRect:  shape.NewRect(x-4, y-4, 8, 8),
 		drawRect: shape.NewRect(x-16, y-20, 32, 32),
@@ -42,12 +51,7 @@ func newPlayer(x, y int) *player {
 	}
 }
 
-func (p *player) damage() {
-	p.invincible = true
-	p.invincibleTime = 60
-}
-
-func (p *player) update() {
+func (p *playerImpl) Update() {
 	p.tick++
 
 	if p.invincible {
@@ -82,7 +86,7 @@ func (p *player) update() {
 	p.drawRect.Move(v)
 }
 
-func (p *player) draw() {
+func (p *playerImpl) Draw() {
 	if p.invincible && p.tick>>3%2 == 0 {
 		// Flashes when invincible.
 		return
@@ -90,4 +94,21 @@ func (p *player) draw() {
 	draw.ImageAt(resource.ImagePlayer[(p.tick>>5)%4], p.drawRect.X0(), p.drawRect.Y0())
 	debug.DrawLineV(p.drawRect, color.White)
 	debug.DrawLineX(p.hitRect, color.White)
+}
+
+func (p *playerImpl) Damage() {
+	p.invincible = true
+	p.invincibleTime = 60
+}
+
+func (p *playerImpl) IsInvincible() bool {
+	return p.invincible
+}
+
+func (p *playerImpl) GetHitRect() *shape.Rect {
+	return p.hitRect
+}
+
+func (p *playerImpl) GetCentorPoint() *shape.Point {
+	return p.centor
 }
