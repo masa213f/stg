@@ -51,7 +51,7 @@ type Handler struct {
 	shotSpeed int
 
 	// game objects
-	background  *background
+	background  Background
 	player      *player
 	playerBomb  *playerBomb
 	playerShots *playerShotList
@@ -85,7 +85,7 @@ func (h *Handler) Init() {
 // Update updates game objects. This function is called every frame.
 func (h *Handler) Update() error {
 	h.tick++
-	h.background.update()
+	h.background.Update()
 
 	if h.tick == 1 {
 		resource.BGM.Reset(resource.BGMPlay)
@@ -197,7 +197,7 @@ func (h *Handler) Update() error {
 
 // Draw draws game objects.
 func (h *Handler) Draw() {
-	h.background.draw()
+	h.background.Draw()
 	h.player.draw()
 	if h.bombWait >= 0 {
 		h.playerBomb.draw()

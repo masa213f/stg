@@ -11,6 +11,11 @@ import (
 	"github.com/masa213f/stg/resource"
 )
 
+type Background interface {
+	Update()
+	Draw()
+}
+
 const cloudSpeed = 4
 
 // Maximum number of clouds that can be generated
@@ -27,6 +32,31 @@ var cloudImageSize = [cloudImageMax]struct {
 	{128, 48},
 	{128, 48},
 	{96, 48},
+}
+
+type backgroundImpl struct {
+	clouds *cloudList
+}
+
+func newBackground() Background {
+	b := &backgroundImpl{
+		clouds: newCloudList(),
+	}
+	// Prepare the clouds that will be displayed at the beginning of the game.
+	for i := -100; i < constant.ScreenWidth; i += cloudSpeed {
+		b.clouds.new(rand.Intn(cloudImageMax), i, constant.ScreenHeight-100+rand.Intn(100))
+	}
+	return b
+}
+
+func (b *backgroundImpl) Update() {
+	b.clouds.new(rand.Intn(cloudImageMax), constant.ScreenWidth, constant.ScreenHeight-100+rand.Intn(100))
+	b.clouds.updateAll()
+}
+
+func (b *backgroundImpl) Draw() {
+	draw.ImageAt(resource.ImageBackground, -100, 0)
+	b.clouds.drawAll()
 }
 
 type cloud struct {
@@ -86,29 +116,4 @@ func (list *cloudList) drawAll() {
 		}
 		draw.ImageAt(ent.image, ent.drawRect.X0(), ent.drawRect.Y0())
 	}
-}
-
-type background struct {
-	clouds *cloudList
-}
-
-func newBackground() *background {
-	b := &background{
-		clouds: newCloudList(),
-	}
-	// Prepare the clouds that will be displayed at the beginning of the game.
-	for i := -100; i < constant.ScreenWidth; i += cloudSpeed {
-		b.clouds.new(rand.Intn(cloudImageMax), i, constant.ScreenHeight-100+rand.Intn(100))
-	}
-	return b
-}
-
-func (b *background) update() {
-	b.clouds.new(rand.Intn(cloudImageMax), constant.ScreenWidth, constant.ScreenHeight-100+rand.Intn(100))
-	b.clouds.updateAll()
-}
-
-func (b *background) draw() {
-	draw.ImageAt(resource.ImageBackground, -100, 0)
-	b.clouds.drawAll()
 }
