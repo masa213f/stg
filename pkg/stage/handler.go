@@ -82,54 +82,34 @@ func (h *Handler) Init() {
 	h.enemyList = newEnemyList()
 }
 
-// Update updates game objects. This function is called every frame.
-func (h *Handler) Update() error {
-	if h.tick == 0 {
-		sound.BGM.Reset(resource.BGMPlay)
+type InputAction uint
+
+const (
+	InputActionNone InputAction = 0 // 0000
+	InputActionBomb InputAction = 1 // 0001
+	InputActionShot InputAction = 2 // 0010
+)
+
+func (h *Handler) Input() InputAction {
+	if h.bombWait > 0 {
+		h.bombWait--
 	}
-	if h.life == 0 {
-		sound.BGM.Pause()
-		return errors.New("gameover")
+	if h.shotWait > 0 {
+		h.shotWait--
 	}
-
-	h.tick++
-
-	h.background.Update()
-	h.enemyList.Update()
-
-	// Create enemies.
-	h.enemyInterval--
-	if h.enemyInterval < 0 {
-		h.enemyInterval = 5
-		h.enemyList.Add([]Enemy{newEnemy(constant.ScreenWidth+16, rand.Intn(constant.ScreenHeight))})
-	}
-
-	// Move player.
-	h.player.Update()
-	px := h.player.GetCentorPoint().X()
-	py := h.player.GetCentorPoint().Y()
-
-	// Fire a player bomb.
-	h.bombWait--
-	if h.bombWait < 0 && input.Bomb() {
-		sound.SE.Play(resource.SEBomb)
+	if h.bombWait == 0 && input.Bomb() {
 		h.bombWait = BombDuration
-		h.playerBomb.NewBomb(px, py)
+		return InputActionBomb
 	}
-	h.playerBomb.Update()
-
-	// Fire playser shots.
-	h.shotWait--
-	if h.shotWait < 0 && input.Shot() {
-		sound.SE.Play(resource.SEShot)
+	if h.shotWait == 0 && input.Shot() {
 		h.shotWait = shotInterval
-		h.playerShots.NewShot(px, py, h.shotSpeed, -15)
-		h.playerShots.NewShot(px, py, h.shotSpeed, 0)
-		h.playerShots.NewShot(px, py, h.shotSpeed, 15)
+		return InputActionShot
 	}
-	h.playerShots.Update()
+	return InputActionNone
+}
 
-	// Collision detection: player bomb -> enemy
+// HitTest: player bomb -> enemy
+func (h *Handler) hitTestPlayerBombToEnemy() {
 	if h.playerBomb.IsActive() {
 		for _, e := range h.enemyList.GetList() {
 			if e.IsInvincible() {
@@ -141,8 +121,10 @@ func (h *Handler) Update() error {
 			}
 		}
 	}
+}
 
-	// Collision detection: player shot -> enemy
+// HitTest: player shot -> enemy
+func (h *Handler) hitTestPlayerShotToEnemy() {
 	shotsHitRects := h.playerShots.GetHitRects()
 OUTER:
 	for i, shot := range shotsHitRects {
@@ -160,8 +142,10 @@ OUTER:
 			}
 		}
 	}
+}
 
-	// Collision detection: enemy -> player
+// HitTest: player <-> enemy
+func (h *Handler) hitTestPlayerToEnemy() {
 	// Skip while the player is invincible or a player bomb running.
 	for _, e := range h.enemyList.GetList() {
 		if h.player.IsInvincible() {
@@ -177,6 +161,49 @@ OUTER:
 			h.life--
 		}
 	}
+}
+
+// Update updates game objects. This function is called every frame.
+func (h *Handler) Update() error {
+	h.tick++
+
+	// stage
+	if h.tick == 0 {
+		sound.BGM.Reset(resource.BGMPlay)
+	}
+	h.background.Update()
+	h.enemyInterval--
+	if h.enemyInterval < 0 {
+		h.enemyInterval = 5
+		h.enemyList.Add([]Enemy{newEnemy(constant.ScreenWidth+16, rand.Intn(constant.ScreenHeight))})
+	}
+
+	if h.life == 0 {
+		sound.BGM.Pause()
+		return errors.New("gameover")
+	}
+	h.enemyList.Update()
+	h.player.Update()
+	h.playerBomb.Update()
+	h.playerShots.Update()
+
+	px := h.player.GetCentorPoint().X()
+	py := h.player.GetCentorPoint().Y()
+
+	switch h.Input() {
+	case InputActionBomb:
+		sound.SE.Play(resource.SEBomb)
+		h.playerBomb.NewBomb(px, py)
+	case InputActionShot:
+		sound.SE.Play(resource.SEShot)
+		h.playerShots.NewShot(px, py, h.shotSpeed, -15)
+		h.playerShots.NewShot(px, py, h.shotSpeed, 0)
+		h.playerShots.NewShot(px, py, h.shotSpeed, 15)
+	}
+
+	h.hitTestPlayerBombToEnemy()
+	h.hitTestPlayerShotToEnemy()
+	h.hitTestPlayerToEnemy()
 
 	return nil
 }
