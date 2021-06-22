@@ -55,7 +55,7 @@ type Handler struct {
 	player      Player
 	playerBomb  PlayerBomb
 	playerShots PlayerShots
-	enemyList   []*enemy
+	enemyList   *EnemyList
 }
 
 // NewHandler returns a new Hander struct.
@@ -79,7 +79,7 @@ func (h *Handler) Init() {
 	h.player = newPlayer(100, constant.ScreenHeight/2)
 	h.playerBomb = newPlayerBomb()
 	h.playerShots = newPlayerShots()
-	h.enemyList = []*enemy{}
+	h.enemyList = newEnemyList()
 }
 
 // Update updates game objects. This function is called every frame.
@@ -95,6 +95,14 @@ func (h *Handler) Update() error {
 	h.tick++
 
 	h.background.Update()
+	h.enemyList.Update()
+
+	// Create enemies.
+	h.enemyInterval--
+	if h.enemyInterval < 0 {
+		h.enemyInterval = 5
+		h.enemyList.Add([]Enemy{newEnemy(constant.ScreenWidth+16, rand.Intn(constant.ScreenHeight))})
+	}
 
 	// Move player.
 	h.player.Update()
@@ -121,22 +129,15 @@ func (h *Handler) Update() error {
 	}
 	h.playerShots.Update()
 
-	// Create enemies.
-	h.enemyInterval--
-	if h.enemyInterval < 0 {
-		h.enemyInterval = 5
-		h.enemyList = append(h.enemyList, newEnemy(constant.ScreenWidth+16, rand.Intn(constant.ScreenHeight)))
-	}
-
 	// Collision detection: player bomb -> enemy
 	if h.playerBomb.IsActive() {
-		for _, e := range h.enemyList {
-			if e.untouchable {
+		for _, e := range h.enemyList.GetList() {
+			if e.IsInvincible() {
 				continue
 			}
-			if shape.Overlap(h.playerBomb.GetHitRect(), e.hitRect) {
+			if shape.Overlap(h.playerBomb.GetHitRect(), e.GetHitRect()) {
 				sound.SE.Play(resource.SEHit)
-				h.score += e.damage(1)
+				h.score += e.Damage(1)
 			}
 		}
 	}
@@ -145,13 +146,13 @@ func (h *Handler) Update() error {
 	shotsHitRects := h.playerShots.GetHitRects()
 OUTER:
 	for i, shot := range shotsHitRects {
-		for _, e := range h.enemyList {
-			if e.untouchable {
+		for _, e := range h.enemyList.GetList() {
+			if e.IsInvincible() {
 				continue
 			}
-			if shape.Overlap(shot, e.hitRect) {
+			if shape.Overlap(shot, e.GetHitRect()) {
 				sound.SE.Play(resource.SEHit)
-				h.score += e.damage(1)
+				h.score += e.Damage(1)
 
 				// the shot disappears.
 				h.playerShots.MakeInactive(i)
@@ -160,24 +161,20 @@ OUTER:
 		}
 	}
 
-	// Update enemies.
-	{
-		for i := 0; i < len(h.enemyList); i++ {
-			e := h.enemyList[i]
-			e.update()
-
-			// Collision detection: enemy -> player
-			// Skip while the player is invincible or a player bomb running.
-			if !e.disabled && !h.player.IsInvincible() && shape.Overlap(e.hitRect, h.player.GetHitRect()) {
-				sound.SE.Play(resource.SEDamage)
-				e.damage(1)
-				h.player.Damage()
-				h.life--
-			}
-
-			if e.disabled {
-				h.enemyList = append(h.enemyList[:i], h.enemyList[i+1:]...)
-			}
+	// Collision detection: enemy -> player
+	// Skip while the player is invincible or a player bomb running.
+	for _, e := range h.enemyList.GetList() {
+		if h.player.IsInvincible() {
+			break
+		}
+		if e.IsDisabled() || e.IsInvincible() {
+			continue
+		}
+		if shape.Overlap(e.GetHitRect(), h.player.GetHitRect()) {
+			sound.SE.Play(resource.SEDamage)
+			e.Damage(1)
+			h.player.Damage()
+			h.life--
 		}
 	}
 
@@ -190,9 +187,6 @@ func (h *Handler) Draw() {
 	h.player.Draw()
 	h.playerBomb.Draw()
 	h.playerShots.Draw()
-
-	for _, e := range h.enemyList {
-		e.draw()
-	}
+	h.enemyList.Draw()
 	draw.Text(resource.FontArcadeSmall, color.White, draw.HorizontalAlignRight, draw.VerticalAlignTop, fmt.Sprintf("Life: %2d, Score: %04d", h.life, h.score))
 }
