@@ -1,4 +1,4 @@
-package shooting
+package stage
 
 type EnemyList struct {
 	list []Enemy

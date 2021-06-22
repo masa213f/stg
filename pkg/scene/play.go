@@ -2,12 +2,12 @@ package scene
 
 import (
 	"github.com/masa213f/stg/pkg/input"
-	shooting "github.com/masa213f/stg/pkg/shump"
 	"github.com/masa213f/stg/pkg/sound"
+	"github.com/masa213f/stg/pkg/stage"
 )
 
 type playSceneHandler struct {
-	stgHandler *shooting.Handler
+	stgHandler *stage.Handler
 }
 
 func newPlayScene() handler {
@@ -17,7 +17,7 @@ func newPlayScene() handler {
 }
 
 func (h *playSceneHandler) init() {
-	h.stgHandler = shooting.NewHandler()
+	h.stgHandler = stage.NewHandler()
 }
 
 func (h *playSceneHandler) update(priv id) id {
