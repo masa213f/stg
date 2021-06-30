@@ -23,6 +23,7 @@ func (l *EnemyList) Update() {
 			newList = append(newList, e)
 		}
 	}
+	l.list = newList
 }
 
 func (l *EnemyList) Draw() {
@@ -36,4 +37,8 @@ func (l *EnemyList) Draw() {
 
 func (l *EnemyList) GetList() []Enemy {
 	return l.list
+}
+
+func (l *EnemyList) Count() int {
+	return len(l.list)
 }

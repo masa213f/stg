@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"image/color"
-	"math/rand"
 
 	"github.com/masa213f/stg/pkg/constant"
 	"github.com/masa213f/stg/pkg/draw"
@@ -41,11 +40,11 @@ const (
 
 // Handler is a object for managing a game.
 type Handler struct {
-	tick          int // General purpose counter.
-	enemyInterval int
-	shotWait      int
-	bombWait      int
+	tick     int // General purpose counter.
+	shotWait int
+	bombWait int
 
+	script    stageScript
 	score     int
 	life      int
 	shotSpeed int
@@ -68,9 +67,9 @@ func NewHandler() *Handler {
 // Init initializes the Handler struct.
 func (h *Handler) Init() {
 	h.tick = 0
-	h.enemyInterval = 0
 	h.shotWait = 0
 	h.bombWait = 0
+	h.script = newStageScript()
 
 	h.life = 3
 	h.shotSpeed = 6
@@ -168,14 +167,19 @@ func (h *Handler) Update() error {
 	h.tick++
 
 	// stage
-	if h.tick == 0 {
+	if h.tick == 1 {
 		sound.BGM.Reset(resource.BGMPlay)
 	}
 	h.background.Update()
-	h.enemyInterval--
-	if h.enemyInterval < 0 {
-		h.enemyInterval = 5
-		h.enemyList.Add([]Enemy{newEnemy(constant.ScreenWidth+16, rand.Intn(constant.ScreenHeight))})
+
+	cond := &condition{enemyCount: h.enemyList.Count()}
+	if h.script.NextEvent(cond) {
+		for _, evt := range h.script.ShowEnemy() {
+			h.enemyList.Add([]Enemy{newEnemy(evt.x, evt.y)})
+		}
+	} else {
+		sound.BGM.Pause()
+		return errors.New("gameover")
 	}
 
 	if h.life == 0 {
