@@ -1,68 +1,27 @@
 package input
 
-import (
-	ebiten "github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
+type inputKind int
+
+const (
+	inputKindLeft inputKind = iota
+	inputKindRight
+	inputKindUp
+	inputKindDown
+	inputKindOK     // menu
+	inputKindCancel // menu
+	inputKindShot   // game
+	inputKindBomb   // game
+	inputKindPause  // game
+	numOfInputKind
 )
 
-// Default controls
-// arrow keys : Move
-// z : Shoot
-// x : Bomb
-// space : pause
-
-// z : OK
-// x : Cancel(Back)
-
-type keyboardConfig struct {
-	Left   ebiten.Key
-	Right  ebiten.Key
-	Up     ebiten.Key
-	Down   ebiten.Key
-	OK     ebiten.Key // menu
-	Cancel ebiten.Key // menu
-	Shot   ebiten.Key // game
-	Bomb   ebiten.Key // game
-	Pause  ebiten.Key // game
+type rawInput interface {
+	PressDuration(inputKind) int
+	JustPressed(inputKind) bool
 }
 
-var defaultKeyboardConfig = keyboardConfig{
-	Left:   ebiten.KeyLeft,
-	Right:  ebiten.KeyRight,
-	Up:     ebiten.KeyUp,
-	Down:   ebiten.KeyDown,
-	OK:     ebiten.KeyZ,
-	Cancel: ebiten.KeyX,
-	Shot:   ebiten.KeyZ,
-	Bomb:   ebiten.KeyX,
-	Pause:  ebiten.KeySpace,
-}
-
-type gamepadConfig struct {
-	Left   ebiten.GamepadButton
-	Right  ebiten.GamepadButton
-	Up     ebiten.GamepadButton
-	Down   ebiten.GamepadButton
-	OK     ebiten.GamepadButton // menu
-	Cancel ebiten.GamepadButton // menu
-	Shot   ebiten.GamepadButton // game
-	Bomb   ebiten.GamepadButton // game
-	Pause  ebiten.GamepadButton // game
-}
-
-var defaultGamepadConfig = gamepadConfig{
-	Left:   ebiten.GamepadButton15,
-	Right:  ebiten.GamepadButton13,
-	Up:     ebiten.GamepadButton12,
-	Down:   ebiten.GamepadButton14,
-	OK:     ebiten.GamepadButton0,
-	Cancel: ebiten.GamepadButton1,
-	Shot:   ebiten.GamepadButton0,
-	Bomb:   ebiten.GamepadButton1,
-	Pause:  ebiten.GamepadButton2,
-}
-
-const defaultGamepadID = 0
+var rawKeyboardInput = newKeyboardInput()
+var rawGamepadInput = newGamepadInput()
 
 // moveControl represents a direction of input.
 type moveControl uint
@@ -113,31 +72,20 @@ var gameMoveTable = [16]MoveAction{
 func Move() MoveAction {
 	var ctrl moveControl
 
-	// keyboard
-	if inpututil.KeyPressDuration(defaultKeyboardConfig.Left) > 0 {
+	if rawKeyboardInput.PressDuration(inputKindLeft) > 0 ||
+		rawGamepadInput.PressDuration(inputKindLeft) > 0 {
 		ctrl |= bitLeft
 	}
-	if inpututil.KeyPressDuration(defaultKeyboardConfig.Right) > 0 {
+	if rawKeyboardInput.PressDuration(inputKindRight) > 0 ||
+		rawGamepadInput.PressDuration(inputKindRight) > 0 {
 		ctrl |= bitRight
 	}
-	if inpututil.KeyPressDuration(defaultKeyboardConfig.Up) > 0 {
+	if rawKeyboardInput.PressDuration(inputKindUp) > 0 ||
+		rawGamepadInput.PressDuration(inputKindUp) > 0 {
 		ctrl |= bitUp
 	}
-	if inpututil.KeyPressDuration(defaultKeyboardConfig.Down) > 0 {
-		ctrl |= bitDown
-	}
-
-	// gamepad
-	if inpututil.GamepadButtonPressDuration(defaultGamepadID, defaultGamepadConfig.Left) > 0 {
-		ctrl |= bitLeft
-	}
-	if inpututil.GamepadButtonPressDuration(defaultGamepadID, defaultGamepadConfig.Right) > 0 {
-		ctrl |= bitRight
-	}
-	if inpututil.GamepadButtonPressDuration(defaultGamepadID, defaultGamepadConfig.Up) > 0 {
-		ctrl |= bitUp
-	}
-	if inpututil.GamepadButtonPressDuration(defaultGamepadID, defaultGamepadConfig.Down) > 0 {
+	if rawKeyboardInput.PressDuration(inputKindDown) > 0 ||
+		rawGamepadInput.PressDuration(inputKindDown) > 0 {
 		ctrl |= bitDown
 	}
 
@@ -146,8 +94,9 @@ func Move() MoveAction {
 
 // UpOrDown returns the vertical movement.
 func UpOrDown() MoveAction {
-	up := inpututil.KeyPressDuration(defaultKeyboardConfig.Up)
-	down := inpututil.KeyPressDuration(defaultKeyboardConfig.Down)
+	// TODO: handle the gamepad input.
+	up := rawKeyboardInput.PressDuration(inputKindUp)
+	down := rawKeyboardInput.PressDuration(inputKindDown)
 
 	if up > 0 && down > 0 {
 		return MoveNone
@@ -162,26 +111,26 @@ func UpOrDown() MoveAction {
 }
 
 func OK() bool {
-	return inpututil.IsKeyJustPressed(defaultKeyboardConfig.OK) ||
-		inpututil.IsGamepadButtonJustPressed(defaultGamepadID, defaultGamepadConfig.OK)
+	return rawKeyboardInput.JustPressed(inputKindOK) ||
+		rawGamepadInput.JustPressed(inputKindOK)
 }
 
 func Cancel() bool {
-	return inpututil.IsKeyJustPressed(defaultKeyboardConfig.Cancel) ||
-		inpututil.IsGamepadButtonJustPressed(defaultGamepadID, defaultGamepadConfig.Cancel)
+	return rawKeyboardInput.JustPressed(inputKindCancel) ||
+		rawGamepadInput.JustPressed(inputKindCancel)
 }
 
 func Shot() bool {
-	return inpututil.KeyPressDuration(defaultKeyboardConfig.Shot) > 0 ||
-		inpututil.GamepadButtonPressDuration(defaultGamepadID, defaultGamepadConfig.Shot) > 0
+	return rawKeyboardInput.PressDuration(inputKindShot) > 0 ||
+		rawGamepadInput.PressDuration(inputKindShot) > 0
 }
 
 func Bomb() bool {
-	return inpututil.IsKeyJustPressed(defaultKeyboardConfig.Bomb) ||
-		inpututil.IsGamepadButtonJustPressed(defaultGamepadID, defaultGamepadConfig.Bomb)
+	return rawKeyboardInput.PressDuration(inputKindBomb) > 0 ||
+		rawGamepadInput.PressDuration(inputKindBomb) > 0
 }
 
 func Pause() bool {
-	return inpututil.IsKeyJustPressed(defaultKeyboardConfig.Pause) ||
-		inpututil.IsGamepadButtonJustPressed(defaultGamepadID, defaultGamepadConfig.Pause)
+	return rawKeyboardInput.PressDuration(inputKindPause) > 0 ||
+		rawGamepadInput.PressDuration(inputKindPause) > 0
 }
