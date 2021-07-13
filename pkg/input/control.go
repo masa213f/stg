@@ -131,6 +131,6 @@ func Bomb() bool {
 }
 
 func Pause() bool {
-	return rawKeyboardInput.PressDuration(inputKindPause) > 0 ||
-		rawGamepadInput.PressDuration(inputKindPause) > 0
+	return rawKeyboardInput.JustPressed(inputKindPause) ||
+		rawGamepadInput.JustPressed(inputKindPause)
 }
