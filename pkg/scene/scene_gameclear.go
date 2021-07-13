@@ -15,11 +15,15 @@ func newStageClearScene() handler {
 	return &stageClearSceneHandler{}
 }
 
-func (h *stageClearSceneHandler) update(priv id) id {
+func (h *stageClearSceneHandler) reset() {
+	// nothing
+}
+
+func (h *stageClearSceneHandler) update() event {
 	if input.OK() {
-		return sceneMenu
+		return eventNext
 	}
-	return sceneStageClear
+	return eventNone
 }
 
 func (h *stageClearSceneHandler) draw() {

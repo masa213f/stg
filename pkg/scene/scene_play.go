@@ -20,25 +20,25 @@ func (h *playSceneHandler) init() {
 	h.stgHandler = stage.NewHandler()
 }
 
-func (h *playSceneHandler) update(priv id) id {
-	if priv == sceneMenu {
-		h.stgHandler.Init()
-	}
+func (h *playSceneHandler) reset() {
+	h.stgHandler.Init()
+}
 
+func (h *playSceneHandler) update() event {
 	if input.Pause() {
 		sound.BGM.Pause()
-		return scenePause
+		return gameEventPause
 	}
 
 	sound.BGM.Play()
 	result := h.stgHandler.Update()
 	switch result {
 	case stage.GameOver:
-		return sceneGameOver
+		return gameEventGameOver
 	case stage.StageClear:
-		return sceneStageClear
+		return gameEventStageClear
 	case stage.Playing:
-		return scenePlay
+		return eventNone
 	default:
 		panic("invalid result")
 	}

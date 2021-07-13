@@ -15,11 +15,15 @@ func newGameOverScene() handler {
 	return &gameOverSceneHandler{}
 }
 
-func (h *gameOverSceneHandler) update(priv id) id {
+func (h *gameOverSceneHandler) reset() {
+	// nothing
+}
+
+func (h *gameOverSceneHandler) update() event {
 	if input.OK() {
-		return sceneMenu
+		return eventNext
 	}
-	return sceneGameOver
+	return eventNone
 }
 
 func (h *gameOverSceneHandler) draw() {

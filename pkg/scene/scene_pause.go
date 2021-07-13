@@ -15,20 +15,20 @@ type pauseSceneHandler struct {
 func newPauseScene() handler {
 	h := &pauseSceneHandler{
 		items: newItemSelector([]item{
-			{"continue", scenePlay},
-			{"menu", sceneMenu},
+			{"continue", eventBack},
+			{"retire", gameEventRetire},
 		}),
 	}
 	return h
 }
 
-func (h *pauseSceneHandler) update(priv id) id {
-	if priv != scenePause {
-		h.items.first()
-	}
+func (h *pauseSceneHandler) reset() {
+	h.items.first()
+}
 
+func (h *pauseSceneHandler) update() event {
 	if input.Pause() {
-		return scenePlay
+		return eventBack
 	}
 
 	if input.OK() {
@@ -36,7 +36,7 @@ func (h *pauseSceneHandler) update(priv id) id {
 	}
 	if input.Cancel() {
 		h.items.last()
-		return sceneMenu
+		return eventNone
 	}
 	switch input.UpOrDown() {
 	case input.MoveUp:
@@ -44,7 +44,7 @@ func (h *pauseSceneHandler) update(priv id) id {
 	case input.MoveDown:
 		h.items.next()
 	}
-	return scenePause
+	return eventNone
 }
 
 func (h *pauseSceneHandler) draw() {

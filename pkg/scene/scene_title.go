@@ -15,11 +15,15 @@ func newTitleScene() handler {
 	return &titleSceneHandler{}
 }
 
-func (h *titleSceneHandler) update(priv id) id {
+func (h *titleSceneHandler) reset() {
+	// nothing
+}
+
+func (h *titleSceneHandler) update() event {
 	if input.OK() {
-		return sceneMenu
+		return eventNext
 	}
-	return sceneTitle
+	return eventNone
 }
 
 func (h *titleSceneHandler) draw() {

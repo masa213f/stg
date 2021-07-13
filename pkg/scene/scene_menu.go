@@ -12,26 +12,26 @@ import (
 func newMenuScene() handler {
 	h := &menuSceneHandler{
 		items: newItemSelector([]item{
-			{"Play", scenePlay},
+			{"Play", menuEventPlay},
 			// {"Options", sceneConfig},
-			{"Exit", sceneExit},
+			{"Exit", eventExit},
 		}),
 	}
 	return h
 }
 
-func (h *menuSceneHandler) update(priv id) id {
-	if priv != sceneMenu {
-		sound.BGM.Reset(resource.BGMMenu)
-		h.items.first()
-	}
+func (h *menuSceneHandler) reset() {
+	sound.BGM.Reset(resource.BGMMenu)
+	h.items.first()
+}
 
+func (h *menuSceneHandler) update() event {
 	if input.OK() {
 		return h.items.getValue()
 	}
 	if input.Cancel() {
 		h.items.last()
-		return sceneMenu
+		return eventNone
 	}
 	switch input.UpOrDown() {
 	case input.MoveUp:
@@ -39,7 +39,7 @@ func (h *menuSceneHandler) update(priv id) id {
 	case input.MoveDown:
 		h.items.next()
 	}
-	return sceneMenu
+	return eventNone
 }
 
 func (h *menuSceneHandler) draw() {

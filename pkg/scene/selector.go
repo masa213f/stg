@@ -2,20 +2,20 @@ package scene
 
 type item struct {
 	text  string
-	value id
+	value event
 }
 
 type itemSelector struct {
 	cursor int
 	texts  []string
-	values []id
+	values []event
 }
 
 func newItemSelector(items []item) *itemSelector {
 	num := len(items)
 	selector := &itemSelector{
 		texts:  make([]string, num),
-		values: make([]id, num),
+		values: make([]event, num),
 	}
 	for i, it := range items {
 		selector.texts[i] = it.text
@@ -28,7 +28,7 @@ func (i *itemSelector) getIndex() int {
 	return i.cursor
 }
 
-func (i *itemSelector) getValue() id {
+func (i *itemSelector) getValue() event {
 	return i.values[i.cursor]
 }
 

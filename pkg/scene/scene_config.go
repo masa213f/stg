@@ -15,11 +15,15 @@ func newConfigScene() handler {
 	return &configSceneHandler{}
 }
 
-func (h *configSceneHandler) update(priv id) id {
+func (h *configSceneHandler) reset() {
+	// nothing
+}
+
+func (h *configSceneHandler) update() event {
 	if input.Cancel() {
-		return sceneMenu
+		return eventBack
 	}
-	return sceneConfig
+	return eventNone
 }
 
 func (h *configSceneHandler) draw() {
