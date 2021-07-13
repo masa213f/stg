@@ -6,14 +6,13 @@ import "errors"
 type id int
 
 const (
-	sceneNone id = iota
-	sceneExit
-	sceneTitle
+	sceneTitle id = iota
 	sceneMenu
 	sceneConfig
 	scenePlay
 	scenePause
 	sceneGameOver
+	sceneExit
 	numOfScene
 )
 
