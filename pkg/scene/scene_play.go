@@ -31,11 +31,17 @@ func (h *playSceneHandler) update(priv id) id {
 	}
 
 	sound.BGM.Play()
-	ret := h.stgHandler.Update()
-	if ret != nil {
+	result := h.stgHandler.Update()
+	switch result {
+	case stage.GameOver:
 		return sceneGameOver
+	case stage.StageClear:
+		return sceneStageClear
+	case stage.Playing:
+		return scenePlay
+	default:
+		panic("invalid result")
 	}
-	return scenePlay
 }
 
 func (h *playSceneHandler) draw() {

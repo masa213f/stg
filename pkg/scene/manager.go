@@ -12,6 +12,7 @@ const (
 	scenePlay
 	scenePause
 	sceneGameOver
+	sceneStageClear
 	sceneExit
 	numOfScene
 )
@@ -37,12 +38,13 @@ func NewManager() *Manager {
 		currentScene: sceneTitle,
 		nextScene:    sceneTitle,
 		handlers: [numOfScene]handler{
-			sceneTitle:    newTitleScene(),
-			sceneMenu:     newMenuScene(),
-			sceneConfig:   newConfigScene(),
-			scenePlay:     newPlayScene(),
-			sceneGameOver: newGameOverScene(),
-			scenePause:    newPauseScene(),
+			sceneTitle:      newTitleScene(),
+			sceneMenu:       newMenuScene(),
+			sceneConfig:     newConfigScene(),
+			scenePlay:       newPlayScene(),
+			sceneGameOver:   newGameOverScene(),
+			sceneStageClear: newStageClearScene(),
+			scenePause:      newPauseScene(),
 		},
 	}
 }

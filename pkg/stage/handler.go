@@ -1,7 +1,6 @@
 package stage
 
 import (
-	"errors"
 	"fmt"
 	"image/color"
 
@@ -36,6 +35,14 @@ const inactiveObjectID = ^objectID(0)
 
 const (
 	shotInterval = 3
+)
+
+type Result int
+
+const (
+	Playing Result = iota
+	GameOver
+	StageClear
 )
 
 // Handler is a object for managing a game.
@@ -163,7 +170,7 @@ func (h *Handler) hitTestPlayerToEnemy() {
 }
 
 // Update updates game objects. This function is called every frame.
-func (h *Handler) Update() error {
+func (h *Handler) Update() Result {
 	h.tick++
 
 	// stage
@@ -179,12 +186,12 @@ func (h *Handler) Update() error {
 		}
 	} else {
 		sound.BGM.Pause()
-		return errors.New("gameover")
+		return StageClear
 	}
 
 	if h.life == 0 {
 		sound.BGM.Pause()
-		return errors.New("gameover")
+		return GameOver
 	}
 	h.enemyList.Update()
 	h.player.Update()
@@ -209,7 +216,7 @@ func (h *Handler) Update() error {
 	h.hitTestPlayerShotToEnemy()
 	h.hitTestPlayerToEnemy()
 
-	return nil
+	return Playing
 }
 
 // Draw draws game objects.
