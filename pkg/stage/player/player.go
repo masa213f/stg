@@ -1,4 +1,4 @@
-package stage
+package player
 
 import (
 	"image/color"
@@ -32,7 +32,7 @@ type playerImpl struct {
 
 var speed = 4
 
-func newPlayer(x, y int) Player {
+func NewPlayer(x, y int) Player {
 	return &playerImpl{
 		centor:   shape.NewPoint(x, y),
 		hitRect:  shape.NewRect(x-4, y-4, 8, 8),

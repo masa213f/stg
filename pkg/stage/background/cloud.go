@@ -1,4 +1,4 @@
-package stage
+package background
 
 import (
 	"math/rand"
@@ -38,7 +38,7 @@ type backgroundImpl struct {
 	clouds *cloudList
 }
 
-func newBackground() Background {
+func NewCloudBackground() Background {
 	b := &backgroundImpl{
 		clouds: newCloudList(),
 	}
@@ -59,14 +59,16 @@ func (b *backgroundImpl) Draw() {
 	b.clouds.drawAll()
 }
 
+const inactiveObjectID = ^uint64(0)
+
 type cloud struct {
-	id       objectID
+	id       uint64
 	image    *ebiten.Image
 	drawRect *shape.Rect
 }
 
 type cloudList struct {
-	nextID    objectID
+	nextID    uint64
 	activeNum int
 	buffer    []*cloud
 }

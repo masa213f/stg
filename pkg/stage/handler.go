@@ -9,6 +9,8 @@ import (
 	"github.com/masa213f/stg/pkg/input"
 	"github.com/masa213f/stg/pkg/shape"
 	"github.com/masa213f/stg/pkg/sound"
+	"github.com/masa213f/stg/pkg/stage/background"
+	"github.com/masa213f/stg/pkg/stage/player"
 	"github.com/masa213f/stg/resource"
 )
 
@@ -28,10 +30,6 @@ import (
 // - disabled ... Do nothing.
 // - untouchable ... Do update and drawing. No collision detection is performed.
 //                  (Immediately after the return of the player, during the enemy's disappearance effect, etc.)
-
-type objectID uint64
-
-const inactiveObjectID = ^objectID(0)
 
 const (
 	shotInterval = 3
@@ -57,10 +55,10 @@ type Handler struct {
 	shotSpeed int
 
 	// game objects
-	background  Background
-	player      Player
-	playerBomb  PlayerBomb
-	playerShots PlayerShots
+	background  background.Background
+	player      player.Player
+	playerBomb  player.PlayerBomb
+	playerShots player.PlayerShots
 	enemyList   *EnemyList
 }
 
@@ -81,10 +79,10 @@ func (h *Handler) Init() {
 	h.life = 3
 	h.shotSpeed = 6
 
-	h.background = newBackground()
-	h.player = newPlayer(100, constant.ScreenHeight/2)
-	h.playerBomb = newPlayerBomb()
-	h.playerShots = newPlayerShots()
+	h.background = background.NewCloudBackground()
+	h.player = player.NewPlayer(100, constant.ScreenHeight/2)
+	h.playerBomb = player.NewPlayerBomb()
+	h.playerShots = player.NewPlayerShots()
 	h.enemyList = newEnemyList()
 }
 
@@ -104,7 +102,7 @@ func (h *Handler) Input() InputAction {
 		h.shotWait--
 	}
 	if h.bombWait == 0 && input.Bomb() {
-		h.bombWait = BombDuration
+		h.bombWait = player.BombDuration
 		return InputActionBomb
 	}
 	if h.shotWait == 0 && input.Shot() {

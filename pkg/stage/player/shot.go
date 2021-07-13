@@ -1,4 +1,4 @@
-package stage
+package player
 
 import (
 	"image/color"
@@ -33,7 +33,7 @@ type pshot struct {
 	drawRect *shape.Rect
 }
 
-func newPlayerShots() PlayerShots {
+func NewPlayerShots() PlayerShots {
 	shots := &playerShotsImpl{
 		store: make([]*pshot, playerShotMaxNum),
 	}

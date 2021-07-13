@@ -1,4 +1,4 @@
-package stage
+package player
 
 import (
 	"image/color"
@@ -25,7 +25,7 @@ type playerBombImpl struct {
 	hitRect  *shape.Rect
 }
 
-func newPlayerBomb() PlayerBomb {
+func NewPlayerBomb() PlayerBomb {
 	return &playerBombImpl{
 		hitRect: &shape.Rect{},
 	}
