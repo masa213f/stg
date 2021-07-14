@@ -12,6 +12,7 @@ import (
 	"github.com/masa213f/stg/pkg/stage/background"
 	"github.com/masa213f/stg/pkg/stage/enemy"
 	"github.com/masa213f/stg/pkg/stage/player"
+	"github.com/masa213f/stg/pkg/stage/script"
 	"github.com/masa213f/stg/resource"
 )
 
@@ -50,7 +51,7 @@ type Handler struct {
 	shotWait int
 	bombWait int
 
-	script    stageScript
+	script    script.Script
 	score     int
 	life      int
 	shotSpeed int
@@ -75,7 +76,7 @@ func (h *Handler) Init() {
 	h.tick = 0
 	h.shotWait = 0
 	h.bombWait = 0
-	h.script = newStageScript()
+	h.script = script.NewStage1()
 
 	h.life = 3
 	h.shotSpeed = 6
@@ -172,33 +173,30 @@ func (h *Handler) hitTestPlayerToEnemy() {
 func (h *Handler) Update() Result {
 	h.tick++
 
-	// stage
 	if h.tick == 1 {
 		sound.BGM.Reset(resource.BGMPlay)
 	}
-	h.background.Update()
-
-	cond := &condition{enemyCount: h.enemyContainer.Count()}
-	if h.script.NextEvent(cond) {
-		for _, evt := range h.script.ShowEnemy() {
-			h.enemyContainer.Add(enemy.NewGhost(evt.x, evt.y))
-		}
-	} else {
-		sound.BGM.Pause()
-		return StageClear
-	}
-
 	if h.life == 0 {
 		sound.BGM.Pause()
 		return GameOver
 	}
-	h.enemyContainer.UpdateAll()
-	h.player.Update()
-	h.playerBomb.Update()
-	h.playerShots.Update()
 
 	px := h.player.GetCentorPoint().X()
 	py := h.player.GetCentorPoint().Y()
+
+	switch h.script.NextEvent(px, py, h.enemyContainer.Count()) {
+	case script.End:
+		sound.BGM.Pause()
+		return StageClear
+	case script.NewEnemies:
+		h.enemyContainer.Add(h.script.NewEnemies()...)
+	}
+
+	h.background.Update()
+	h.player.Update()
+	h.playerBomb.Update()
+	h.playerShots.Update()
+	h.enemyContainer.UpdateAll()
 
 	switch h.Input() {
 	case InputActionBomb:
