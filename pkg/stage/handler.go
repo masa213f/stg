@@ -10,6 +10,7 @@ import (
 	"github.com/masa213f/stg/pkg/shape"
 	"github.com/masa213f/stg/pkg/sound"
 	"github.com/masa213f/stg/pkg/stage/background"
+	"github.com/masa213f/stg/pkg/stage/enemy"
 	"github.com/masa213f/stg/pkg/stage/player"
 	"github.com/masa213f/stg/resource"
 )
@@ -55,11 +56,11 @@ type Handler struct {
 	shotSpeed int
 
 	// game objects
-	background  background.Background
-	player      player.Player
-	playerBomb  player.PlayerBomb
-	playerShots player.PlayerShots
-	enemyList   *EnemyList
+	background     background.Background
+	player         player.Player
+	playerBomb     player.PlayerBomb
+	playerShots    player.PlayerShots
+	enemyContainer *enemy.Container
 }
 
 // NewHandler returns a new Hander struct.
@@ -83,7 +84,7 @@ func (h *Handler) Init() {
 	h.player = player.NewPlayer(100, constant.ScreenHeight/2)
 	h.playerBomb = player.NewPlayerBomb()
 	h.playerShots = player.NewPlayerShots()
-	h.enemyList = newEnemyList()
+	h.enemyContainer = enemy.NewContainer()
 }
 
 type InputAction uint
@@ -115,7 +116,7 @@ func (h *Handler) Input() InputAction {
 // HitTest: player bomb -> enemy
 func (h *Handler) hitTestPlayerBombToEnemy() {
 	if h.playerBomb.IsActive() {
-		for _, e := range h.enemyList.GetList() {
+		for _, e := range h.enemyContainer.GetList() {
 			if e.IsInvincible() {
 				continue
 			}
@@ -132,7 +133,7 @@ func (h *Handler) hitTestPlayerShotToEnemy() {
 	shotsHitRects := h.playerShots.GetHitRects()
 OUTER:
 	for i, shot := range shotsHitRects {
-		for _, e := range h.enemyList.GetList() {
+		for _, e := range h.enemyContainer.GetList() {
 			if e.IsInvincible() {
 				continue
 			}
@@ -151,7 +152,7 @@ OUTER:
 // HitTest: player <-> enemy
 func (h *Handler) hitTestPlayerToEnemy() {
 	// Skip while the player is invincible or a player bomb running.
-	for _, e := range h.enemyList.GetList() {
+	for _, e := range h.enemyContainer.GetList() {
 		if h.player.IsInvincible() {
 			break
 		}
@@ -177,10 +178,10 @@ func (h *Handler) Update() Result {
 	}
 	h.background.Update()
 
-	cond := &condition{enemyCount: h.enemyList.Count()}
+	cond := &condition{enemyCount: h.enemyContainer.Count()}
 	if h.script.NextEvent(cond) {
 		for _, evt := range h.script.ShowEnemy() {
-			h.enemyList.Add([]Enemy{newEnemy(evt.x, evt.y)})
+			h.enemyContainer.Add(enemy.NewGhost(evt.x, evt.y))
 		}
 	} else {
 		sound.BGM.Pause()
@@ -191,7 +192,7 @@ func (h *Handler) Update() Result {
 		sound.BGM.Pause()
 		return GameOver
 	}
-	h.enemyList.Update()
+	h.enemyContainer.UpdateAll()
 	h.player.Update()
 	h.playerBomb.Update()
 	h.playerShots.Update()
@@ -223,6 +224,6 @@ func (h *Handler) Draw() {
 	h.player.Draw()
 	h.playerBomb.Draw()
 	h.playerShots.Draw()
-	h.enemyList.Draw()
+	h.enemyContainer.DrawAll()
 	draw.Text(resource.FontArcadeSmall, color.White, draw.HorizontalAlignRight, draw.VerticalAlignTop, fmt.Sprintf("Life: %2d, Score: %04d", h.life, h.score))
 }
