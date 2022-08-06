@@ -50,7 +50,7 @@ func main() {
 	}
 }
 
-// Game stores information about the game.
+// Game implements the ebiten.Game interface.
 type Game struct {
 	tick           uint64
 	memStat        runtime.MemStats
@@ -66,7 +66,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return constant.ScreenWidth, constant.ScreenHeight
 }
 
-// Update updates a game.
+// Update updates a game by one tick.
 func (g *Game) Update() error {
 	g.tick++
 	if debug.GetMode() && g.tick%60 == 0 {
@@ -85,7 +85,7 @@ func bToMib(b uint64) uint64 {
 	return b / 1024 / 1024
 }
 
-// Draw draws the game screen.
+// Draw draws the game screen by one frame.
 func (g *Game) Draw(screen *ebiten.Image) {
 	draw.SetScreen(screen)
 	g.manager.Draw()
