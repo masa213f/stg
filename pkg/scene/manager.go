@@ -87,7 +87,7 @@ type Manager struct {
 	handlers     [numOfScene]handler
 }
 
-var ErrNormalTermination = errors.New("exit")
+var Exit = errors.New("exit")
 
 // NewManager creates a new Manager instance.
 func NewManager() *Manager {
@@ -109,7 +109,7 @@ func NewManager() *Manager {
 // Update executes a Update function of the current scene.
 func (s *Manager) Update() error {
 	if s.event == eventExit {
-		return ErrNormalTermination
+		return Exit
 	}
 
 	if s.event != eventNone {

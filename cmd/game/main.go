@@ -45,7 +45,7 @@ func main() {
 		debug:   debugOpt,
 		manager: scene.NewManager(),
 	}
-	if err := ebiten.RunGame(g); err != nil && err != scene.ErrNormalTermination {
+	if err := ebiten.RunGame(g); err != nil && err != scene.Exit {
 		panic(err)
 	}
 }
