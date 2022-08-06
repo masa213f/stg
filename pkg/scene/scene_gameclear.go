@@ -11,22 +11,22 @@ import (
 type stageClearSceneHandler struct {
 }
 
-func newStageClearScene() handler {
+func NewStageClear() Handler {
 	return &stageClearSceneHandler{}
 }
 
-func (h *stageClearSceneHandler) reset() {
+func (h *stageClearSceneHandler) Reset() {
 	// nothing
 }
 
-func (h *stageClearSceneHandler) update() event {
+func (h *stageClearSceneHandler) Update() Event {
 	if input.OK() {
-		return eventNext
+		return EventNext
 	}
-	return eventNone
+	return EventNone
 }
 
-func (h *stageClearSceneHandler) draw() {
+func (h *stageClearSceneHandler) Draw() {
 	draw.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
 	draw.Text(resource.FontArcade, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignMiddle, "Clear!")
 }

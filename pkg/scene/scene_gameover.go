@@ -11,22 +11,22 @@ import (
 type gameOverSceneHandler struct {
 }
 
-func newGameOverScene() handler {
+func NewGameOver() Handler {
 	return &gameOverSceneHandler{}
 }
 
-func (h *gameOverSceneHandler) reset() {
+func (h *gameOverSceneHandler) Reset() {
 	// nothing
 }
 
-func (h *gameOverSceneHandler) update() event {
+func (h *gameOverSceneHandler) Update() Event {
 	if input.OK() {
-		return eventNext
+		return EventNext
 	}
-	return eventNone
+	return EventNone
 }
 
-func (h *gameOverSceneHandler) draw() {
+func (h *gameOverSceneHandler) Draw() {
 	draw.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
 	draw.Text(resource.FontArcade, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignMiddle, "GameOver")
 }

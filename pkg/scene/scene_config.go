@@ -11,22 +11,22 @@ import (
 type configSceneHandler struct {
 }
 
-func newConfigScene() handler {
+func NewConfig() Handler {
 	return &configSceneHandler{}
 }
 
-func (h *configSceneHandler) reset() {
+func (h *configSceneHandler) Reset() {
 	// nothing
 }
 
-func (h *configSceneHandler) update() event {
+func (h *configSceneHandler) Update() Event {
 	if input.Cancel() {
-		return eventBack
+		return EventBack
 	}
-	return eventNone
+	return EventNone
 }
 
-func (h *configSceneHandler) draw() {
+func (h *configSceneHandler) Draw() {
 	draw.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
 	draw.Text(resource.FontArcade, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignMiddle, "Config")
 }

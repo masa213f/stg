@@ -9,29 +9,29 @@ import (
 	"github.com/masa213f/stg/resource"
 )
 
-func newMenuScene() handler {
+func NewMenu() Handler {
 	h := &menuSceneHandler{
 		items: newItemSelector([]item{
-			{"Play", menuEventPlay},
+			{"Play", MenuEventPlay},
 			// {"Options", sceneConfig},
-			{"Exit", eventExit},
+			{"Exit", EventExit},
 		}),
 	}
 	return h
 }
 
-func (h *menuSceneHandler) reset() {
+func (h *menuSceneHandler) Reset() {
 	sound.BGM.Reset(resource.BGMMenu)
 	h.items.first()
 }
 
-func (h *menuSceneHandler) update() event {
+func (h *menuSceneHandler) Update() Event {
 	if input.OK() {
 		return h.items.getValue()
 	}
 	if input.Cancel() {
 		h.items.last()
-		return eventNone
+		return EventNone
 	}
 	switch input.UpOrDown() {
 	case input.MoveUp:
@@ -39,10 +39,10 @@ func (h *menuSceneHandler) update() event {
 	case input.MoveDown:
 		h.items.next()
 	}
-	return eventNone
+	return EventNone
 }
 
-func (h *menuSceneHandler) draw() {
+func (h *menuSceneHandler) Draw() {
 	idx := h.items.getIndex()
 	disp := []string{}
 	for i, t := range h.items.getTexts() {

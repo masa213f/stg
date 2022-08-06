@@ -10,7 +10,7 @@ type playSceneHandler struct {
 	stgHandler *stage.Handler
 }
 
-func newPlayScene() handler {
+func NewPlay() Handler {
 	h := &playSceneHandler{}
 	h.init()
 	return h
@@ -20,30 +20,30 @@ func (h *playSceneHandler) init() {
 	h.stgHandler = stage.NewHandler()
 }
 
-func (h *playSceneHandler) reset() {
+func (h *playSceneHandler) Reset() {
 	h.stgHandler.Init()
 }
 
-func (h *playSceneHandler) update() event {
+func (h *playSceneHandler) Update() Event {
 	if input.Pause() {
 		sound.BGM.Pause()
-		return gameEventPause
+		return GameEventPause
 	}
 
 	sound.BGM.Play()
 	result := h.stgHandler.Update()
 	switch result {
 	case stage.GameOver:
-		return gameEventGameOver
+		return GameEventGameOver
 	case stage.StageClear:
-		return gameEventStageClear
+		return GameEventStageClear
 	case stage.Playing:
-		return eventNone
+		return EventNone
 	default:
 		panic("invalid result")
 	}
 }
 
-func (h *playSceneHandler) draw() {
+func (h *playSceneHandler) Draw() {
 	h.stgHandler.Draw()
 }

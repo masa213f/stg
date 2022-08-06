@@ -11,22 +11,22 @@ import (
 type titleSceneHandler struct {
 }
 
-func newTitleScene() handler {
+func NewTitle() Handler {
 	return &titleSceneHandler{}
 }
 
-func (h *titleSceneHandler) reset() {
+func (h *titleSceneHandler) Reset() {
 	// nothing
 }
 
-func (h *titleSceneHandler) update() event {
+func (h *titleSceneHandler) Update() Event {
 	if input.OK() {
-		return eventNext
+		return EventNext
 	}
-	return eventNone
+	return EventNone
 }
 
-func (h *titleSceneHandler) draw() {
+func (h *titleSceneHandler) Draw() {
 	draw.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
 	draw.MultiText(resource.FontArcade, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignMiddle,
 		[]string{"Shooting", "press z key"})

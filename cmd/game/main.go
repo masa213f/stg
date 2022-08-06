@@ -14,7 +14,7 @@ import (
 	"github.com/masa213f/stg/pkg/constant"
 	"github.com/masa213f/stg/pkg/debug"
 	"github.com/masa213f/stg/pkg/draw"
-	"github.com/masa213f/stg/pkg/scene"
+	"github.com/masa213f/stg/pkg/manager"
 )
 
 var version string
@@ -43,9 +43,9 @@ func main() {
 	draw.SetScreenSize(constant.ScreenWidth, constant.ScreenHeight)
 	g := &Game{
 		debug:   debugOpt,
-		manager: scene.NewManager(),
+		manager: manager.NewManager(),
 	}
-	if err := ebiten.RunGame(g); err != nil && err != scene.Exit {
+	if err := ebiten.RunGame(g); err != nil && err != manager.Exit {
 		panic(err)
 	}
 }
@@ -58,7 +58,7 @@ type Game struct {
 	privNumGC      uint32
 	statusLine     string
 	debug          bool
-	manager        *scene.Manager
+	manager        *manager.Manager
 }
 
 // Layout returns screen size.

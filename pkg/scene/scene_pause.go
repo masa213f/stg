@@ -12,23 +12,23 @@ type pauseSceneHandler struct {
 	items *itemSelector
 }
 
-func newPauseScene() handler {
+func NewPause() Handler {
 	h := &pauseSceneHandler{
 		items: newItemSelector([]item{
-			{"continue", eventBack},
-			{"retire", gameEventRetire},
+			{"continue", EventBack},
+			{"retire", GameEventRetire},
 		}),
 	}
 	return h
 }
 
-func (h *pauseSceneHandler) reset() {
+func (h *pauseSceneHandler) Reset() {
 	h.items.first()
 }
 
-func (h *pauseSceneHandler) update() event {
+func (h *pauseSceneHandler) Update() Event {
 	if input.Pause() {
-		return eventBack
+		return EventBack
 	}
 
 	if input.OK() {
@@ -36,7 +36,7 @@ func (h *pauseSceneHandler) update() event {
 	}
 	if input.Cancel() {
 		h.items.last()
-		return eventNone
+		return EventNone
 	}
 	switch input.UpOrDown() {
 	case input.MoveUp:
@@ -44,10 +44,10 @@ func (h *pauseSceneHandler) update() event {
 	case input.MoveDown:
 		h.items.next()
 	}
-	return eventNone
+	return EventNone
 }
 
-func (h *pauseSceneHandler) draw() {
+func (h *pauseSceneHandler) Draw() {
 	idx := h.items.getIndex()
 	disp := []string{"Pause", ""}
 	for i, t := range h.items.getTexts() {
