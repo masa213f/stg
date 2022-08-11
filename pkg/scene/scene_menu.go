@@ -5,23 +5,29 @@ import (
 
 	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/input"
-	"github.com/masa213f/stg/pkg/sound"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
-func NewMenu() Handler {
+type menuSceneHandler struct {
+	items *itemSelector
+	bgm   util.BGMPlayer
+}
+
+func NewMenu(bgm util.BGMPlayer) Handler {
 	h := &menuSceneHandler{
 		items: newItemSelector([]item{
 			{"Play", MenuEventPlay},
 			// {"Options", sceneConfig},
 			{"Exit", EventExit},
 		}),
+		bgm: bgm,
 	}
 	return h
 }
 
 func (h *menuSceneHandler) Reset() {
-	sound.BGM.Reset(resource.BGMMenu)
+	h.bgm.Reset(resource.BGMMenu)
 	h.items.first()
 }
 

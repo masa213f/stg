@@ -51,7 +51,3 @@ func (i *itemSelector) first() {
 func (i *itemSelector) last() {
 	i.cursor = len(i.values) - 1
 }
-
-type menuSceneHandler struct {
-	items *itemSelector
-}

@@ -8,11 +8,11 @@ import (
 	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/input"
 	"github.com/masa213f/stg/pkg/shape"
-	"github.com/masa213f/stg/pkg/sound"
 	"github.com/masa213f/stg/pkg/stage/background"
 	"github.com/masa213f/stg/pkg/stage/enemy"
 	"github.com/masa213f/stg/pkg/stage/player"
 	"github.com/masa213f/stg/pkg/stage/script"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
@@ -47,6 +47,8 @@ const (
 
 // Handler is a object for managing a game.
 type Handler struct {
+	bgm      util.BGMPlayer
+	se       util.SEPlayer
 	tick     int // General purpose counter.
 	shotWait int
 	bombWait int
@@ -65,8 +67,11 @@ type Handler struct {
 }
 
 // NewHandler returns a new Hander struct.
-func NewHandler() *Handler {
-	h := &Handler{}
+func NewHandler(bgm util.BGMPlayer, se util.SEPlayer) *Handler {
+	h := &Handler{
+		bgm: bgm,
+		se:  se,
+	}
 	h.Init()
 	return h
 }
@@ -122,7 +127,7 @@ func (h *Handler) hitTestPlayerBombToEnemy() {
 				continue
 			}
 			if shape.Overlap(h.playerBomb.GetHitRect(), e.GetHitRect()) {
-				sound.SE.Play(resource.SEHit)
+				h.se.Play(resource.SEHit)
 				h.score += e.Damage(1)
 			}
 		}
@@ -139,7 +144,7 @@ OUTER:
 				continue
 			}
 			if shape.Overlap(shot, e.GetHitRect()) {
-				sound.SE.Play(resource.SEHit)
+				h.se.Play(resource.SEHit)
 				h.score += e.Damage(1)
 
 				// the shot disappears.
@@ -161,7 +166,7 @@ func (h *Handler) hitTestPlayerToEnemy() {
 			continue
 		}
 		if shape.Overlap(e.GetHitRect(), h.player.GetHitRect()) {
-			sound.SE.Play(resource.SEDamage)
+			h.se.Play(resource.SEDamage)
 			e.Damage(1)
 			h.player.Damage()
 			h.life--
@@ -174,10 +179,10 @@ func (h *Handler) Update() Result {
 	h.tick++
 
 	if h.tick == 1 {
-		sound.BGM.Reset(resource.BGMPlay)
+		h.bgm.Reset(resource.BGMPlay)
 	}
 	if h.life == 0 {
-		sound.BGM.Pause()
+		h.bgm.Pause()
 		return GameOver
 	}
 
@@ -186,7 +191,7 @@ func (h *Handler) Update() Result {
 
 	switch h.script.NextEvent(px, py, h.enemyContainer.Count()) {
 	case script.End:
-		sound.BGM.Pause()
+		h.bgm.Pause()
 		return StageClear
 	case script.NewEnemies:
 		h.enemyContainer.Add(h.script.NewEnemies()...)
@@ -200,10 +205,10 @@ func (h *Handler) Update() Result {
 
 	switch h.Input() {
 	case InputActionBomb:
-		sound.SE.Play(resource.SEBomb)
+		h.se.Play(resource.SEBomb)
 		h.playerBomb.NewBomb(px, py)
 	case InputActionShot:
-		sound.SE.Play(resource.SEShot)
+		h.se.Play(resource.SEShot)
 		h.playerShots.NewShot(px, py, h.shotSpeed, -15)
 		h.playerShots.NewShot(px, py, h.shotSpeed, 0)
 		h.playerShots.NewShot(px, py, h.shotSpeed, 15)

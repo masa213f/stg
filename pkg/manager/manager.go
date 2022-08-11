@@ -29,9 +29,9 @@ func NewManager() *Manager {
 		transitionTable: map[int]map[scene.Event]next{},
 	}
 	sceneTitle := mgr.AddScene(scene.NewTitle())
-	sceneMenu := mgr.AddScene(scene.NewMenu())
+	sceneMenu := mgr.AddScene(scene.NewMenu(BGM))
 	sceneConfig := mgr.AddScene(scene.NewConfig())
-	scenePlay := mgr.AddScene(scene.NewPlay())
+	scenePlay := mgr.AddScene(scene.NewPlay(BGM, SE))
 	sceneGameOver := mgr.AddScene(scene.NewGameOver())
 	sceneStageClear := mgr.AddScene(scene.NewStageClear())
 	scenePause := mgr.AddScene(scene.NewPause())

@@ -5,13 +5,9 @@ import (
 	_ "image/png"
 )
 
-type BackgroundMusicID int
-
 const (
-	BGMNone BackgroundMusicID = iota
-	BGMMenu
+	BGMMenu = iota
 	BGMPlay
-	NumOfBGM
 )
 
 // Raw data fo background music.
@@ -22,14 +18,11 @@ var (
 	RawDataBGMPlay []byte
 )
 
-type SoundEffectID int
-
 const (
-	SEShot SoundEffectID = iota
+	SEShot = iota
 	SEBomb
 	SEHit
 	SEDamage
-	NumOfSE
 )
 
 // Raw data of sound effects.

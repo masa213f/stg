@@ -2,22 +2,27 @@ package scene
 
 import (
 	"github.com/masa213f/stg/pkg/input"
-	"github.com/masa213f/stg/pkg/sound"
 	"github.com/masa213f/stg/pkg/stage"
+	"github.com/masa213f/stg/pkg/util"
 )
 
 type playSceneHandler struct {
 	stgHandler *stage.Handler
+	bgm        util.BGMPlayer
+	se         util.SEPlayer
 }
 
-func NewPlay() Handler {
-	h := &playSceneHandler{}
+func NewPlay(bgm util.BGMPlayer, se util.SEPlayer) Handler {
+	h := &playSceneHandler{
+		bgm: bgm,
+		se:  se,
+	}
 	h.init()
 	return h
 }
 
 func (h *playSceneHandler) init() {
-	h.stgHandler = stage.NewHandler()
+	h.stgHandler = stage.NewHandler(h.bgm, h.se)
 }
 
 func (h *playSceneHandler) Reset() {
@@ -26,11 +31,11 @@ func (h *playSceneHandler) Reset() {
 
 func (h *playSceneHandler) Update() Event {
 	if input.Pause() {
-		sound.BGM.Pause()
+		h.bgm.Pause()
 		return GameEventPause
 	}
 
-	sound.BGM.Play()
+	h.bgm.Play()
 	result := h.stgHandler.Update()
 	switch result {
 	case stage.GameOver:
