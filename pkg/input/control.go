@@ -20,8 +20,18 @@ type rawInput interface {
 	JustPressed(inputKind) bool
 }
 
-var rawKeyboardInput = newKeyboardInput()
-var rawGamepadInput = newGamepadInput()
+var (
+	rawKeyboardInput rawInput
+	rawGamepadInput  rawInput
+)
+
+func setKeyboardInput(raw rawInput) {
+	rawKeyboardInput = raw
+}
+
+func setGamepadInput(raw rawInput) {
+	rawGamepadInput = raw
+}
 
 // moveControl represents a direction of input.
 type moveControl uint

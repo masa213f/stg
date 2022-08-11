@@ -190,8 +190,8 @@ var _ = Describe("control", func() {
 		}
 
 		for i, tt := range testcase {
-			rawKeyboardInput = newMockRawInput(tt.keyboard)
-			rawGamepadInput = newMockRawInput(tt.gamepad)
+			setKeyboardInput(newMockRawInput(tt.keyboard))
+			setGamepadInput(newMockRawInput(tt.gamepad))
 			By(fmt.Sprintf("%d", i))
 			Expect(Move()).To(Equal(tt.expect))
 		}
