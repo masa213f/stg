@@ -1,3 +1,5 @@
+//go:build !test
+
 package input
 
 import (
@@ -22,6 +24,10 @@ const (
 type gamepadInput struct {
 	id     ebiten.GamepadID
 	config [numOfInputKind]ebiten.GamepadButton
+}
+
+func init() {
+	setGamepadInput(newGamepadInput())
 }
 
 func newGamepadInput() rawInput {

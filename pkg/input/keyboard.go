@@ -1,3 +1,5 @@
+//go:build !test
+
 package input
 
 import (
@@ -28,6 +30,10 @@ const (
 
 type keyboardInput struct {
 	config [numOfInputKind]ebiten.Key
+}
+
+func init() {
+	setKeyboardInput(newKeyboardInput())
 }
 
 func newKeyboardInput() rawInput {
