@@ -14,15 +14,15 @@ type bgmPlayer struct {
 	players    [resource.NumOfBGM]*audio.Player
 }
 
-func loadBGM(ctx *audio.Context, resources map[resource.BackgroundMusicID][]byte) (*bgmPlayer, error) {
+func loadBGM(audioContext *audio.Context, sampleRate int, resources map[resource.BackgroundMusicID][]byte) (*bgmPlayer, error) {
 	bgm := &bgmPlayer{}
 	for id, data := range resources {
-		s, err := mp3.Decode(ctx, bytes.NewReader(data))
+		s, err := mp3.DecodeWithSampleRate(sampleRate, bytes.NewReader(data))
 		if err != nil {
 			return nil, err
 		}
 		l := audio.NewInfiniteLoop(s, s.Length())
-		p, err := audio.NewPlayer(ctx, l)
+		p, err := audioContext.NewPlayer(l)
 		if err != nil {
 			return nil, err
 		}

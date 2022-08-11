@@ -3,7 +3,7 @@ package sound
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
@@ -13,19 +13,22 @@ import (
 const sePlayerMaxNum = 100
 
 type sePlayer struct {
-	volume  float64
-	source  [resource.NumOfSE][]byte
-	players [resource.NumOfSE][sePlayerMaxNum]*audio.Player
+	audioContext *audio.Context
+	volume       float64
+	source       [resource.NumOfSE][]byte
+	players      [resource.NumOfSE][sePlayerMaxNum]*audio.Player
 }
 
-func loadSE(ctx *audio.Context, resources map[resource.SoundEffectID][]byte) (*sePlayer, error) {
-	se := &sePlayer{}
+func loadSE(audioContext *audio.Context, sampleRate int, resources map[resource.SoundEffectID][]byte) (*sePlayer, error) {
+	se := &sePlayer{
+		audioContext: audioContext,
+	}
 	for id, data := range resources {
-		s, err := mp3.Decode(ctx, bytes.NewReader(data))
+		s, err := mp3.DecodeWithSampleRate(sampleRate, bytes.NewReader(data))
 		if err != nil {
 			return nil, err
 		}
-		src, err := ioutil.ReadAll(s)
+		src, err := io.ReadAll(s)
 		if err != nil {
 			return nil, err
 		}
@@ -49,7 +52,7 @@ func (se *sePlayer) Play(id resource.SoundEffectID) {
 	for i := range players {
 		switch {
 		case players[i] == nil:
-			p := audio.NewPlayerFromBytes(audioContext, se.source[id])
+			p := se.audioContext.NewPlayerFromBytes(se.source[id])
 			p.SetVolume(se.volume)
 			p.Play()
 			players[i] = p

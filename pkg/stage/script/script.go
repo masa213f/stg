@@ -24,8 +24,6 @@ const (
 	condDo
 )
 
-type waitFunc func(wait, playerX, playerY, enemyNum int) int
-
 type step struct {
 	waitFlame          int
 	waitAllEnemiesGone bool

@@ -21,7 +21,7 @@ func init() {
 	audioContext = audio.NewContext(sampleRate)
 
 	var err error
-	SE, err = loadSE(audioContext, map[resource.SoundEffectID][]byte{
+	SE, err = loadSE(audioContext, sampleRate, map[resource.SoundEffectID][]byte{
 		resource.SEShot:   resource.RawDataSEShot,
 		resource.SEBomb:   resource.RawDataSEBomb,
 		resource.SEHit:    resource.RawDataSEHit,
@@ -32,7 +32,7 @@ func init() {
 	}
 	SE.SetVolume(defaultSEVolume)
 
-	BGM, err = loadBGM(audioContext, map[resource.BackgroundMusicID][]byte{
+	BGM, err = loadBGM(audioContext, sampleRate, map[resource.BackgroundMusicID][]byte{
 		resource.BGMMenu: resource.RawDataBGMMenu,
 		resource.BGMPlay: resource.RawDataBGMPlay,
 	})

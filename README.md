@@ -35,7 +35,7 @@ NOTE: This program is developed on Ubuntu 20.04 on WSL2. If you build in another
 Install build tools on your Ubuntu.
 
 - Install Git. (Any version is okay)
-- Install Go v1.16.xx.
+- Install Go v1.18.xx.
 
 Checkout this repository.
 

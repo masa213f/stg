@@ -20,7 +20,7 @@ type next struct {
 	keepState bool
 }
 
-var Exit = errors.New("exit")
+var ErrExit = errors.New("exit")
 
 // NewManager creates a new Manager instance.
 func NewManager() *Manager {
@@ -85,7 +85,7 @@ func (m *Manager) SetInitialScene(s int) {
 // Update executes a Update function of the current scene.
 func (m *Manager) Update() error {
 	if m.currentScene == 0 {
-		return Exit
+		return ErrExit
 	}
 
 	if m.event != scene.EventNone {
