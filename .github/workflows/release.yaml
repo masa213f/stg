@@ -9,10 +9,10 @@ jobs:
     name: Release on GitHub
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
         with:
-          go-version: 1.16
+          go-version: 1.18
       - run: make setup
       - run: make build VERSION=${GITHUB_REF#refs/tags/}
       - run: make zip VERSION=${GITHUB_REF#refs/tags/}
