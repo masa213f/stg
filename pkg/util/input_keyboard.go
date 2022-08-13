@@ -1,6 +1,6 @@
 //go:build !test
 
-package input
+package util
 
 import (
 	ebiten "github.com/hajimehoshi/ebiten/v2"
@@ -29,16 +29,12 @@ const (
 )
 
 type keyboardInput struct {
-	config [numOfInputKind]ebiten.Key
+	config [NumOfInputKind]ebiten.Key
 }
 
-func init() {
-	setKeyboardInput(newKeyboardInput())
-}
-
-func newKeyboardInput() rawInput {
+func NewKeyboardInput() Input {
 	return &keyboardInput{
-		config: [numOfInputKind]ebiten.Key{
+		config: [NumOfInputKind]ebiten.Key{
 			defaultKeyboardConfigLeftKey,
 			defaultKeyboardConfigRightKey,
 			defaultKeyboardConfigUpKey,
@@ -52,12 +48,12 @@ func newKeyboardInput() rawInput {
 	}
 }
 
-func (i *keyboardInput) PressDuration(kind inputKind) int {
+func (i *keyboardInput) PressDuration(kind InputKind) int {
 	key := i.config[kind]
 	return inpututil.KeyPressDuration(key)
 }
 
-func (i *keyboardInput) JustPressed(kind inputKind) bool {
+func (i *keyboardInput) JustPressed(kind InputKind) bool {
 	key := i.config[kind]
 	return inpututil.IsKeyJustPressed(key)
 }

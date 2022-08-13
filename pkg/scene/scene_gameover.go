@@ -4,15 +4,16 @@ import (
 	"image/color"
 
 	"github.com/masa213f/stg/pkg/draw"
-	"github.com/masa213f/stg/pkg/input"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type gameOverSceneHandler struct {
+	ctrl util.Control
 }
 
-func NewGameOver() Handler {
-	return &gameOverSceneHandler{}
+func NewGameOver(ctrl util.Control) Handler {
+	return &gameOverSceneHandler{ctrl: ctrl}
 }
 
 func (h *gameOverSceneHandler) Reset() {
@@ -20,7 +21,7 @@ func (h *gameOverSceneHandler) Reset() {
 }
 
 func (h *gameOverSceneHandler) Update() Event {
-	if input.OK() {
+	if h.ctrl.Select() {
 		return EventNext
 	}
 	return EventNone

@@ -4,20 +4,22 @@ import (
 	"image/color"
 
 	"github.com/masa213f/stg/pkg/draw"
-	"github.com/masa213f/stg/pkg/input"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type pauseSceneHandler struct {
 	items *itemSelector
+	ctrl  util.Control
 }
 
-func NewPause() Handler {
+func NewPause(ctrl util.Control) Handler {
 	h := &pauseSceneHandler{
 		items: newItemSelector([]item{
 			{"continue", EventBack},
 			{"retire", GameEventRetire},
 		}),
+		ctrl: ctrl,
 	}
 	return h
 }
@@ -27,21 +29,20 @@ func (h *pauseSceneHandler) Reset() {
 }
 
 func (h *pauseSceneHandler) Update() Event {
-	if input.Pause() {
+	if h.ctrl.Pause() {
 		return EventBack
 	}
-
-	if input.OK() {
+	if h.ctrl.Select() {
 		return h.items.getValue()
 	}
-	if input.Cancel() {
+	if h.ctrl.Cancel() {
 		h.items.last()
 		return EventNone
 	}
-	switch input.UpOrDown() {
-	case input.MoveUp:
+	switch h.ctrl.UpOrDown() {
+	case util.MoveUp:
 		h.items.priv()
-	case input.MoveDown:
+	case util.MoveDown:
 		h.items.next()
 	}
 	return EventNone

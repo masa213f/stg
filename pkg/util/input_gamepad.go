@@ -1,6 +1,6 @@
 //go:build !test
 
-package input
+package util
 
 import (
 	ebiten "github.com/hajimehoshi/ebiten/v2"
@@ -23,17 +23,13 @@ const (
 
 type gamepadInput struct {
 	id     ebiten.GamepadID
-	config [numOfInputKind]ebiten.GamepadButton
+	config [NumOfInputKind]ebiten.GamepadButton
 }
 
-func init() {
-	setGamepadInput(newGamepadInput())
-}
-
-func newGamepadInput() rawInput {
+func NewGamepadInput() Input {
 	return &gamepadInput{
 		id: defaultGamepadID,
-		config: [numOfInputKind]ebiten.GamepadButton{
+		config: [NumOfInputKind]ebiten.GamepadButton{
 			defaultGamepadConfigLeft,
 			defaultGamepadConfigRight,
 			defaultGamepadConfigUp,
@@ -47,12 +43,12 @@ func newGamepadInput() rawInput {
 	}
 }
 
-func (i *gamepadInput) PressDuration(kind inputKind) int {
+func (i *gamepadInput) PressDuration(kind InputKind) int {
 	key := i.config[kind]
 	return inpututil.GamepadButtonPressDuration(i.id, key)
 }
 
-func (i *gamepadInput) JustPressed(kind inputKind) bool {
+func (i *gamepadInput) JustPressed(kind InputKind) bool {
 	key := i.config[kind]
 	return inpututil.IsGamepadButtonJustPressed(i.id, key)
 }

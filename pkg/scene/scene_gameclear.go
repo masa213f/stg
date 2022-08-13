@@ -4,15 +4,16 @@ import (
 	"image/color"
 
 	"github.com/masa213f/stg/pkg/draw"
-	"github.com/masa213f/stg/pkg/input"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type stageClearSceneHandler struct {
+	ctrl util.Control
 }
 
-func NewStageClear() Handler {
-	return &stageClearSceneHandler{}
+func NewStageClear(ctrl util.Control) Handler {
+	return &stageClearSceneHandler{ctrl: ctrl}
 }
 
 func (h *stageClearSceneHandler) Reset() {
@@ -20,7 +21,7 @@ func (h *stageClearSceneHandler) Reset() {
 }
 
 func (h *stageClearSceneHandler) Update() Event {
-	if input.OK() {
+	if h.ctrl.Select() {
 		return EventNext
 	}
 	return EventNone

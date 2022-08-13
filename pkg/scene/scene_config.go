@@ -4,15 +4,16 @@ import (
 	"image/color"
 
 	"github.com/masa213f/stg/pkg/draw"
-	"github.com/masa213f/stg/pkg/input"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type configSceneHandler struct {
+	ctrl util.Control
 }
 
-func NewConfig() Handler {
-	return &configSceneHandler{}
+func NewConfig(ctrl util.Control) Handler {
+	return &configSceneHandler{ctrl: ctrl}
 }
 
 func (h *configSceneHandler) Reset() {
@@ -20,7 +21,7 @@ func (h *configSceneHandler) Reset() {
 }
 
 func (h *configSceneHandler) Update() Event {
-	if input.Cancel() {
+	if h.ctrl.Cancel() {
 		return EventBack
 	}
 	return EventNone

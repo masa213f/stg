@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/masa213f/stg/pkg/scene"
+	"github.com/masa213f/stg/pkg/util"
 )
 
 // Manager controls scene handlers.
@@ -28,13 +29,17 @@ func NewManager() *Manager {
 		event:           scene.EventNone,
 		transitionTable: map[int]map[scene.Event]next{},
 	}
-	sceneTitle := mgr.AddScene(scene.NewTitle())
-	sceneMenu := mgr.AddScene(scene.NewMenu(BGM))
-	sceneConfig := mgr.AddScene(scene.NewConfig())
-	scenePlay := mgr.AddScene(scene.NewPlay(BGM, SE))
-	sceneGameOver := mgr.AddScene(scene.NewGameOver())
-	sceneStageClear := mgr.AddScene(scene.NewStageClear())
-	scenePause := mgr.AddScene(scene.NewPause())
+
+	input := util.NewCombinedInput(util.NewKeyboardInput(), util.NewGamepadInput())
+	ctrl := util.NewControl(input)
+
+	sceneTitle := mgr.AddScene(scene.NewTitle(ctrl))
+	sceneMenu := mgr.AddScene(scene.NewMenu(ctrl, BGM))
+	sceneConfig := mgr.AddScene(scene.NewConfig(ctrl))
+	scenePlay := mgr.AddScene(scene.NewPlay(ctrl, BGM, SE))
+	sceneGameOver := mgr.AddScene(scene.NewGameOver(ctrl))
+	sceneStageClear := mgr.AddScene(scene.NewStageClear(ctrl))
+	scenePause := mgr.AddScene(scene.NewPause(ctrl))
 
 	transitions := []*struct {
 		from      int

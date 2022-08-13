@@ -6,7 +6,6 @@ import (
 
 	"github.com/masa213f/stg/pkg/constant"
 	"github.com/masa213f/stg/pkg/draw"
-	"github.com/masa213f/stg/pkg/input"
 	"github.com/masa213f/stg/pkg/shape"
 	"github.com/masa213f/stg/pkg/stage/background"
 	"github.com/masa213f/stg/pkg/stage/enemy"
@@ -47,6 +46,7 @@ const (
 
 // Handler is a object for managing a game.
 type Handler struct {
+	ctrl     util.Control
 	bgm      util.BGMPlayer
 	se       util.SEPlayer
 	tick     int // General purpose counter.
@@ -67,10 +67,11 @@ type Handler struct {
 }
 
 // NewHandler returns a new Hander struct.
-func NewHandler(bgm util.BGMPlayer, se util.SEPlayer) *Handler {
+func NewHandler(ctrl util.Control, bgm util.BGMPlayer, se util.SEPlayer) *Handler {
 	h := &Handler{
-		bgm: bgm,
-		se:  se,
+		ctrl: ctrl,
+		bgm:  bgm,
+		se:   se,
 	}
 	h.Init()
 	return h
@@ -108,11 +109,11 @@ func (h *Handler) Input() InputAction {
 	if h.shotWait > 0 {
 		h.shotWait--
 	}
-	if h.bombWait == 0 && input.Bomb() {
+	if h.bombWait == 0 && h.ctrl.Bomb() {
 		h.bombWait = player.BombDuration
 		return InputActionBomb
 	}
-	if h.shotWait == 0 && input.Shot() {
+	if h.shotWait == 0 && h.ctrl.Shot() {
 		h.shotWait = shotInterval
 		return InputActionShot
 	}
@@ -198,7 +199,7 @@ func (h *Handler) Update() Result {
 	}
 
 	h.background.Update()
-	h.player.Update()
+	h.player.Update(h.ctrl.Move())
 	h.playerBomb.Update()
 	h.playerShots.Update()
 	h.enemyContainer.UpdateAll()

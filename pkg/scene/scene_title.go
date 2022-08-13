@@ -4,15 +4,16 @@ import (
 	"image/color"
 
 	"github.com/masa213f/stg/pkg/draw"
-	"github.com/masa213f/stg/pkg/input"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type titleSceneHandler struct {
+	ctrl util.Control
 }
 
-func NewTitle() Handler {
-	return &titleSceneHandler{}
+func NewTitle(ctrl util.Control) Handler {
+	return &titleSceneHandler{ctrl: ctrl}
 }
 
 func (h *titleSceneHandler) Reset() {
@@ -20,7 +21,7 @@ func (h *titleSceneHandler) Reset() {
 }
 
 func (h *titleSceneHandler) Update() Event {
-	if input.OK() {
+	if h.ctrl.Select() {
 		return EventNext
 	}
 	return EventNone

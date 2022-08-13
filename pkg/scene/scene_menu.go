@@ -4,24 +4,25 @@ import (
 	"image/color"
 
 	"github.com/masa213f/stg/pkg/draw"
-	"github.com/masa213f/stg/pkg/input"
 	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type menuSceneHandler struct {
 	items *itemSelector
+	ctrl  util.Control
 	bgm   util.BGMPlayer
 }
 
-func NewMenu(bgm util.BGMPlayer) Handler {
+func NewMenu(ctrl util.Control, bgm util.BGMPlayer) Handler {
 	h := &menuSceneHandler{
 		items: newItemSelector([]item{
 			{"Play", MenuEventPlay},
 			// {"Options", sceneConfig},
 			{"Exit", EventExit},
 		}),
-		bgm: bgm,
+		ctrl: ctrl,
+		bgm:  bgm,
 	}
 	return h
 }
@@ -32,17 +33,17 @@ func (h *menuSceneHandler) Reset() {
 }
 
 func (h *menuSceneHandler) Update() Event {
-	if input.OK() {
+	if h.ctrl.Select() {
 		return h.items.getValue()
 	}
-	if input.Cancel() {
+	if h.ctrl.Cancel() {
 		h.items.last()
 		return EventNone
 	}
-	switch input.UpOrDown() {
-	case input.MoveUp:
+	switch h.ctrl.UpOrDown() {
+	case util.MoveUp:
 		h.items.priv()
-	case input.MoveDown:
+	case util.MoveDown:
 		h.items.next()
 	}
 	return EventNone

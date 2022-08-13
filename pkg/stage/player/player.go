@@ -6,13 +6,13 @@ import (
 	"github.com/masa213f/stg/pkg/constant"
 	"github.com/masa213f/stg/pkg/debug"
 	"github.com/masa213f/stg/pkg/draw"
-	"github.com/masa213f/stg/pkg/input"
 	"github.com/masa213f/stg/pkg/shape"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type Player interface {
-	Update()
+	Update(util.MoveDirection)
 	Draw()
 	Damage()
 	IsInvincible() bool
@@ -38,20 +38,20 @@ func NewPlayer(x, y int) Player {
 		hitRect:  shape.NewRect(x-4, y-4, 8, 8),
 		drawRect: shape.NewRect(x-16, y-20, 32, 32),
 		speedTable: [9]*shape.Vector{
-			input.MoveNone:       shape.NewVectorP(0, 0),
-			input.MoveRight:      shape.NewVectorP(speed, 0),
-			input.MoveLowerRight: shape.NewVectorP(speed, 45),
-			input.MoveDown:       shape.NewVectorP(speed, 90),
-			input.MoveLowerLeft:  shape.NewVectorP(speed, 135),
-			input.MoveLeft:       shape.NewVectorP(speed, 180),
-			input.MoveUpperLeft:  shape.NewVectorP(speed, 225),
-			input.MoveUp:         shape.NewVectorP(speed, 270),
-			input.MoveUpperRight: shape.NewVectorP(speed, 315),
+			util.MoveNone:       shape.NewVectorP(0, 0),
+			util.MoveRight:      shape.NewVectorP(speed, 0),
+			util.MoveLowerRight: shape.NewVectorP(speed, 45),
+			util.MoveDown:       shape.NewVectorP(speed, 90),
+			util.MoveLowerLeft:  shape.NewVectorP(speed, 135),
+			util.MoveLeft:       shape.NewVectorP(speed, 180),
+			util.MoveUpperLeft:  shape.NewVectorP(speed, 225),
+			util.MoveUp:         shape.NewVectorP(speed, 270),
+			util.MoveUpperRight: shape.NewVectorP(speed, 315),
 		},
 	}
 }
 
-func (p *playerImpl) Update() {
+func (p *playerImpl) Update(direction util.MoveDirection) {
 	p.tick++
 
 	if p.invincible {
@@ -62,9 +62,9 @@ func (p *playerImpl) Update() {
 	}
 
 	// Move
-	p.centor.Move(p.speedTable[input.Move()])
-	p.hitRect.Move(p.speedTable[input.Move()])
-	p.drawRect.Move(p.speedTable[input.Move()])
+	p.centor.Move(p.speedTable[direction])
+	p.hitRect.Move(p.speedTable[direction])
+	p.drawRect.Move(p.speedTable[direction])
 
 	// Calculation of adjustment amount when going out of the screen.
 	var vx, vy int
