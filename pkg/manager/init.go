@@ -6,18 +6,18 @@ import (
 )
 
 const (
+	sampleRate       = 44100
 	defaultBGMVolume = 0.1
 	defaultSEVolume  = 0.1
-	sampleRate       = 44100
 )
 
 var (
-	BGM util.BGMPlayer
-	SE  util.SEPlayer
+	audio util.AudioPlayer
 )
 
 func init() {
 	util.InitAudio(sampleRate)
+	audio = util.NewAudioPlayer(defaultBGMVolume, defaultSEVolume)
 
 	seList := map[int][]byte{
 		resource.SEShot:   resource.RawDataSEShot,
@@ -25,10 +25,8 @@ func init() {
 		resource.SEHit:    resource.RawDataSEHit,
 		resource.SEDamage: resource.RawDataSEDamage,
 	}
-	SE = util.NewSEPlayer(sampleRate, defaultSEVolume)
 	for id, src := range seList {
-		err := SE.Load(id, src)
-		if err != nil {
+		if err := audio.LoadSE(id, src); err != nil {
 			panic(err)
 		}
 	}
@@ -37,10 +35,8 @@ func init() {
 		resource.BGMMenu: resource.RawDataBGMMenu,
 		resource.BGMPlay: resource.RawDataBGMPlay,
 	}
-	BGM = util.NewBGMPlayer(sampleRate, defaultBGMVolume)
 	for id, src := range bgmList {
-		err := BGM.Load(id, src)
-		if err != nil {
+		if err := audio.LoadBGM(id, src); err != nil {
 			panic(err)
 		}
 	}

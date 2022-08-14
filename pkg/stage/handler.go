@@ -47,8 +47,7 @@ const (
 // Handler is a object for managing a game.
 type Handler struct {
 	ctrl     util.Control
-	bgm      util.BGMPlayer
-	se       util.SEPlayer
+	audio    util.AudioPlayer
 	tick     int // General purpose counter.
 	shotWait int
 	bombWait int
@@ -67,11 +66,10 @@ type Handler struct {
 }
 
 // NewHandler returns a new Hander struct.
-func NewHandler(ctrl util.Control, bgm util.BGMPlayer, se util.SEPlayer) *Handler {
+func NewHandler(ctrl util.Control, audio util.AudioPlayer) *Handler {
 	h := &Handler{
-		ctrl: ctrl,
-		bgm:  bgm,
-		se:   se,
+		ctrl:  ctrl,
+		audio: audio,
 	}
 	h.Init()
 	return h
@@ -128,7 +126,7 @@ func (h *Handler) hitTestPlayerBombToEnemy() {
 				continue
 			}
 			if shape.Overlap(h.playerBomb.GetHitRect(), e.GetHitRect()) {
-				h.se.Play(resource.SEHit)
+				h.audio.PlaySE(resource.SEHit)
 				h.score += e.Damage(1)
 			}
 		}
@@ -145,7 +143,7 @@ OUTER:
 				continue
 			}
 			if shape.Overlap(shot, e.GetHitRect()) {
-				h.se.Play(resource.SEHit)
+				h.audio.PlaySE(resource.SEHit)
 				h.score += e.Damage(1)
 
 				// the shot disappears.
@@ -167,7 +165,7 @@ func (h *Handler) hitTestPlayerToEnemy() {
 			continue
 		}
 		if shape.Overlap(e.GetHitRect(), h.player.GetHitRect()) {
-			h.se.Play(resource.SEDamage)
+			h.audio.PlaySE(resource.SEDamage)
 			e.Damage(1)
 			h.player.Damage()
 			h.life--
@@ -180,10 +178,10 @@ func (h *Handler) Update() Result {
 	h.tick++
 
 	if h.tick == 1 {
-		h.bgm.Reset(resource.BGMPlay)
+		h.audio.ResetBGM(resource.BGMPlay)
 	}
 	if h.life == 0 {
-		h.bgm.Pause()
+		h.audio.PauseBGM()
 		return GameOver
 	}
 
@@ -192,7 +190,7 @@ func (h *Handler) Update() Result {
 
 	switch h.script.NextEvent(px, py, h.enemyContainer.Count()) {
 	case script.End:
-		h.bgm.Pause()
+		h.audio.PauseBGM()
 		return StageClear
 	case script.NewEnemies:
 		h.enemyContainer.Add(h.script.NewEnemies()...)
@@ -206,10 +204,10 @@ func (h *Handler) Update() Result {
 
 	switch h.Input() {
 	case InputActionBomb:
-		h.se.Play(resource.SEBomb)
+		h.audio.PlaySE(resource.SEBomb)
 		h.playerBomb.NewBomb(px, py)
 	case InputActionShot:
-		h.se.Play(resource.SEShot)
+		h.audio.PlaySE(resource.SEShot)
 		h.playerShots.NewShot(px, py, h.shotSpeed, -15)
 		h.playerShots.NewShot(px, py, h.shotSpeed, 0)
 		h.playerShots.NewShot(px, py, h.shotSpeed, 15)

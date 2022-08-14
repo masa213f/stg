@@ -11,24 +11,24 @@ import (
 type menuSceneHandler struct {
 	items *itemSelector
 	ctrl  util.Control
-	bgm   util.BGMPlayer
+	audio util.AudioPlayer
 }
 
-func NewMenu(ctrl util.Control, bgm util.BGMPlayer) Handler {
+func NewMenu(ctrl util.Control, audio util.AudioPlayer) Handler {
 	h := &menuSceneHandler{
 		items: newItemSelector([]item{
 			{"Play", MenuEventPlay},
 			// {"Options", sceneConfig},
 			{"Exit", EventExit},
 		}),
-		ctrl: ctrl,
-		bgm:  bgm,
+		ctrl:  ctrl,
+		audio: audio,
 	}
 	return h
 }
 
 func (h *menuSceneHandler) Reset() {
-	h.bgm.Reset(resource.BGMMenu)
+	h.audio.ResetBGM(resource.BGMMenu)
 	h.items.first()
 }
 

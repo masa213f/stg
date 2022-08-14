@@ -8,22 +8,20 @@ import (
 type playSceneHandler struct {
 	stgHandler *stage.Handler
 	ctrl       util.Control
-	bgm        util.BGMPlayer
-	se         util.SEPlayer
+	audio      util.AudioPlayer
 }
 
-func NewPlay(ctrl util.Control, bgm util.BGMPlayer, se util.SEPlayer) Handler {
+func NewPlay(ctrl util.Control, audio util.AudioPlayer) Handler {
 	h := &playSceneHandler{
-		ctrl: ctrl,
-		bgm:  bgm,
-		se:   se,
+		ctrl:  ctrl,
+		audio: audio,
 	}
 	h.init()
 	return h
 }
 
 func (h *playSceneHandler) init() {
-	h.stgHandler = stage.NewHandler(h.ctrl, h.bgm, h.se)
+	h.stgHandler = stage.NewHandler(h.ctrl, h.audio)
 }
 
 func (h *playSceneHandler) Reset() {
@@ -32,11 +30,11 @@ func (h *playSceneHandler) Reset() {
 
 func (h *playSceneHandler) Update() Event {
 	if h.ctrl.Pause() {
-		h.bgm.Pause()
+		h.audio.PauseBGM()
 		return GameEventPause
 	}
 
-	h.bgm.Play()
+	h.audio.PlayBGM()
 	result := h.stgHandler.Update()
 	switch result {
 	case stage.GameOver:

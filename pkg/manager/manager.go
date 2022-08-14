@@ -34,9 +34,9 @@ func NewManager() *Manager {
 	ctrl := util.NewControl(input)
 
 	sceneTitle := mgr.AddScene(scene.NewTitle(ctrl))
-	sceneMenu := mgr.AddScene(scene.NewMenu(ctrl, BGM))
+	sceneMenu := mgr.AddScene(scene.NewMenu(ctrl, audio))
 	sceneConfig := mgr.AddScene(scene.NewConfig(ctrl))
-	scenePlay := mgr.AddScene(scene.NewPlay(ctrl, BGM, SE))
+	scenePlay := mgr.AddScene(scene.NewPlay(ctrl, audio))
 	sceneGameOver := mgr.AddScene(scene.NewGameOver(ctrl))
 	sceneStageClear := mgr.AddScene(scene.NewStageClear(ctrl))
 	scenePause := mgr.AddScene(scene.NewPause(ctrl))
