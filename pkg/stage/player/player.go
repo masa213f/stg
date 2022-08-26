@@ -4,8 +4,6 @@ import (
 	"image/color"
 
 	"github.com/masa213f/stg/pkg/constant"
-	"github.com/masa213f/stg/pkg/debug"
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/shape"
 	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
@@ -13,7 +11,7 @@ import (
 
 type Player interface {
 	Update(util.MoveDirection)
-	Draw()
+	Draw(util.Screen)
 	Damage()
 	IsInvincible() bool
 	GetHitRect() *shape.Rect
@@ -86,14 +84,14 @@ func (p *playerImpl) Update(direction util.MoveDirection) {
 	p.drawRect.Move(v)
 }
 
-func (p *playerImpl) Draw() {
+func (p *playerImpl) Draw(screen util.Screen) {
 	if p.invincible && p.tick>>3%2 == 0 {
 		// Flashes when invincible.
 		return
 	}
-	draw.ImageAt(resource.ImagePlayer[(p.tick>>5)%4], p.drawRect.X0(), p.drawRect.Y0())
-	debug.DrawLineV(p.drawRect, color.White)
-	debug.DrawLineX(p.hitRect, color.White)
+	screen.ImageAt(resource.ImagePlayer[(p.tick>>5)%4], p.drawRect.X0(), p.drawRect.Y0())
+	screen.DebugLineV(p.drawRect, color.White)
+	screen.DebugLineX(p.hitRect, color.White)
 }
 
 func (p *playerImpl) Damage() {

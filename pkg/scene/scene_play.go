@@ -7,21 +7,23 @@ import (
 
 type playSceneHandler struct {
 	stgHandler *stage.Handler
+	screen     util.Screen
 	ctrl       util.Control
 	audio      util.AudioPlayer
 }
 
-func NewPlay(ctrl util.Control, audio util.AudioPlayer) Handler {
+func NewPlay(screen util.Screen, ctrl util.Control, audio util.AudioPlayer) Handler {
 	h := &playSceneHandler{
-		ctrl:  ctrl,
-		audio: audio,
+		screen: screen,
+		ctrl:   ctrl,
+		audio:  audio,
 	}
 	h.init()
 	return h
 }
 
 func (h *playSceneHandler) init() {
-	h.stgHandler = stage.NewHandler(h.ctrl, h.audio)
+	h.stgHandler = stage.NewHandler(h.screen, h.ctrl, h.audio)
 }
 
 func (h *playSceneHandler) Reset() {

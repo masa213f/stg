@@ -3,16 +3,16 @@ package scene
 import (
 	"image/color"
 
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type configSceneHandler struct {
-	ctrl util.Control
+	screen util.Screen
+	ctrl   util.Control
 }
 
-func NewConfig(ctrl util.Control) Handler {
+func NewConfig(screen util.Screen, ctrl util.Control) Handler {
 	return &configSceneHandler{ctrl: ctrl}
 }
 
@@ -28,6 +28,6 @@ func (h *configSceneHandler) Update() Event {
 }
 
 func (h *configSceneHandler) Draw() {
-	draw.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
-	draw.Text(resource.FontArcade, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignMiddle, "Config")
+	h.screen.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
+	h.screen.Text(resource.FontArcade, color.White, util.HorizontalAlignCenter, util.VerticalAlignMiddle, "Config")
 }

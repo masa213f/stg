@@ -4,7 +4,7 @@ import (
 	_ "embed"
 
 	"github.com/golang/freetype/truetype"
-	"github.com/masa213f/stg/pkg/draw"
+	"github.com/masa213f/stg/pkg/util"
 	"golang.org/x/image/font"
 )
 
@@ -17,18 +17,18 @@ const (
 )
 
 var (
-	FontArcade      *draw.Font
-	FontArcadeSmall *draw.Font
+	FontArcade      *util.Font
+	FontArcadeSmall *util.Font
 )
 
-func loadFont(data []byte, size int) (*draw.Font, error) {
+func loadFont(data []byte, size int) (*util.Font, error) {
 	tt, err := truetype.Parse(data)
 	if err != nil {
 		return nil, err
 	}
 
 	const dpi = 72
-	ret := draw.NewFont(truetype.NewFace(tt, &truetype.Options{
+	ret := util.NewFont(truetype.NewFace(tt, &truetype.Options{
 		Size:    float64(size),
 		DPI:     dpi,
 		Hinting: font.HintingFull,

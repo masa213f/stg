@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/masa213f/stg/pkg/scene"
 	"github.com/masa213f/stg/pkg/util"
 )
@@ -12,6 +13,7 @@ import (
 type Manager struct {
 	currentScene    int
 	event           scene.Event
+	screen          util.Screen
 	handlers        []scene.Handler
 	transitionTable map[int]map[scene.Event]next
 }
@@ -24,22 +26,23 @@ type next struct {
 var ErrExit = errors.New("exit")
 
 // NewManager creates a new Manager instance.
-func NewManager() *Manager {
+func NewManager(width, height int, debugMode bool) *Manager {
+	screen := util.NewScreen(width, height, debugMode)
 	mgr := &Manager{
 		event:           scene.EventNone,
+		screen:          screen,
 		transitionTable: map[int]map[scene.Event]next{},
 	}
-
 	input := util.NewCombinedInput(util.NewKeyboardInput(), util.NewGamepadInput())
 	ctrl := util.NewControl(input)
 
-	sceneTitle := mgr.AddScene(scene.NewTitle(ctrl))
-	sceneMenu := mgr.AddScene(scene.NewMenu(ctrl, audio))
-	sceneConfig := mgr.AddScene(scene.NewConfig(ctrl))
-	scenePlay := mgr.AddScene(scene.NewPlay(ctrl, audio))
-	sceneGameOver := mgr.AddScene(scene.NewGameOver(ctrl))
-	sceneStageClear := mgr.AddScene(scene.NewStageClear(ctrl))
-	scenePause := mgr.AddScene(scene.NewPause(ctrl))
+	sceneTitle := mgr.AddScene(scene.NewTitle(screen, ctrl))
+	sceneMenu := mgr.AddScene(scene.NewMenu(screen, ctrl, audio))
+	sceneConfig := mgr.AddScene(scene.NewConfig(screen, ctrl))
+	scenePlay := mgr.AddScene(scene.NewPlay(screen, ctrl, audio))
+	sceneGameOver := mgr.AddScene(scene.NewGameOver(screen, ctrl))
+	sceneStageClear := mgr.AddScene(scene.NewStageClear(screen, ctrl))
+	scenePause := mgr.AddScene(scene.NewPause(screen, ctrl))
 
 	transitions := []*struct {
 		from      int
@@ -109,6 +112,7 @@ func (m *Manager) Update() error {
 }
 
 // Draw executes a Draw function of the current scene.
-func (m *Manager) Draw() {
+func (m *Manager) Draw(screen *ebiten.Image) {
+	m.screen.SetImage(screen)
 	m.handlers[m.currentScene-1].Draw()
 }

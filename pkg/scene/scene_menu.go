@@ -3,26 +3,27 @@ package scene
 import (
 	"image/color"
 
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type menuSceneHandler struct {
-	items *itemSelector
-	ctrl  util.Control
-	audio util.AudioPlayer
+	items  *itemSelector
+	screen util.Screen
+	ctrl   util.Control
+	audio  util.AudioPlayer
 }
 
-func NewMenu(ctrl util.Control, audio util.AudioPlayer) Handler {
+func NewMenu(screen util.Screen, ctrl util.Control, audio util.AudioPlayer) Handler {
 	h := &menuSceneHandler{
 		items: newItemSelector([]item{
 			{"Play", MenuEventPlay},
 			// {"Options", sceneConfig},
 			{"Exit", EventExit},
 		}),
-		ctrl:  ctrl,
-		audio: audio,
+		screen: screen,
+		ctrl:   ctrl,
+		audio:  audio,
 	}
 	return h
 }
@@ -59,6 +60,6 @@ func (h *menuSceneHandler) Draw() {
 			disp = append(disp, t)
 		}
 	}
-	draw.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
-	draw.MultiText(resource.FontArcade, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignMiddle, disp)
+	h.screen.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
+	h.screen.MultiText(resource.FontArcade, color.White, util.HorizontalAlignCenter, util.VerticalAlignMiddle, disp)
 }

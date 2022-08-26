@@ -12,8 +12,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/masa213f/stg/pkg/constant"
-	"github.com/masa213f/stg/pkg/debug"
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/manager"
 )
 
@@ -36,14 +34,12 @@ func main() {
 		fmt.Println(version)
 		os.Exit(0)
 	}
-	debug.SetMode(debugOpt)
 
 	ebiten.SetWindowTitle(constant.WindowTitle)
 	ebiten.SetWindowSize(constant.WindowWidth, constant.WindowHeight)
-	draw.SetScreenSize(constant.ScreenWidth, constant.ScreenHeight)
 	g := &Game{
 		debug:   debugOpt,
-		manager: manager.NewManager(),
+		manager: manager.NewManager(constant.ScreenWidth, constant.ScreenHeight, debugOpt),
 	}
 	if err := ebiten.RunGame(g); err != nil && err != manager.ErrExit {
 		panic(err)
@@ -69,7 +65,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 // Update updates a game by one tick.
 func (g *Game) Update() error {
 	g.tick++
-	if debug.GetMode() && g.tick%60 == 0 {
+	if g.debug && g.tick%60 == 0 {
 		runtime.ReadMemStats(&g.memStat)
 		g.statusLine = fmt.Sprintf("FPS: %0.1f\nTPS: %0.1f\n", ebiten.CurrentFPS(), ebiten.CurrentTPS())
 		g.statusLine += fmt.Sprintf("Heap: %2d (inuse: %2d, idle: %2d)\n", bToMib(g.memStat.HeapSys), bToMib(g.memStat.HeapInuse), bToMib(g.memStat.HeapIdle))
@@ -87,7 +83,6 @@ func bToMib(b uint64) uint64 {
 
 // Draw draws the game screen by one frame.
 func (g *Game) Draw(screen *ebiten.Image) {
-	draw.SetScreen(screen)
-	g.manager.Draw()
+	g.manager.Draw(screen)
 	ebitenutil.DebugPrint(screen, g.statusLine)
 }

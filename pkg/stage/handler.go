@@ -5,7 +5,6 @@ import (
 	"image/color"
 
 	"github.com/masa213f/stg/pkg/constant"
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/shape"
 	"github.com/masa213f/stg/pkg/stage/background"
 	"github.com/masa213f/stg/pkg/stage/enemy"
@@ -46,6 +45,7 @@ const (
 
 // Handler is a object for managing a game.
 type Handler struct {
+	screen   util.Screen
 	ctrl     util.Control
 	audio    util.AudioPlayer
 	tick     int // General purpose counter.
@@ -66,10 +66,11 @@ type Handler struct {
 }
 
 // NewHandler returns a new Hander struct.
-func NewHandler(ctrl util.Control, audio util.AudioPlayer) *Handler {
+func NewHandler(screen util.Screen, ctrl util.Control, audio util.AudioPlayer) *Handler {
 	h := &Handler{
-		ctrl:  ctrl,
-		audio: audio,
+		screen: screen,
+		ctrl:   ctrl,
+		audio:  audio,
 	}
 	h.Init()
 	return h
@@ -222,10 +223,10 @@ func (h *Handler) Update() Result {
 
 // Draw draws game objects.
 func (h *Handler) Draw() {
-	h.background.Draw()
-	h.player.Draw()
-	h.playerBomb.Draw()
-	h.playerShots.Draw()
-	h.enemyContainer.DrawAll()
-	draw.Text(resource.FontArcadeSmall, color.White, draw.HorizontalAlignRight, draw.VerticalAlignTop, fmt.Sprintf("Life: %2d, Score: %04d", h.life, h.score))
+	h.background.Draw(h.screen)
+	h.player.Draw(h.screen)
+	h.playerBomb.Draw(h.screen)
+	h.playerShots.Draw(h.screen)
+	h.enemyContainer.DrawAll(h.screen)
+	h.screen.Text(resource.FontArcadeSmall, color.White, util.HorizontalAlignRight, util.VerticalAlignTop, fmt.Sprintf("Life: %2d, Score: %04d", h.life, h.score))
 }

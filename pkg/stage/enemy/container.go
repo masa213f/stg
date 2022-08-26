@@ -1,10 +1,13 @@
 package enemy
 
-import "github.com/masa213f/stg/pkg/shape"
+import (
+	"github.com/masa213f/stg/pkg/shape"
+	"github.com/masa213f/stg/pkg/util"
+)
 
 type Enemy interface {
 	Update()
-	Draw()
+	Draw(screen util.Screen)
 	Damage(d int) (score int)
 	IsDisabled() bool
 	IsInvincible() bool
@@ -33,12 +36,12 @@ func (c *Container) UpdateAll() {
 	c.enemies = newList
 }
 
-func (c *Container) DrawAll() {
+func (c *Container) DrawAll(screen util.Screen) {
 	for _, e := range c.enemies {
 		if e.IsDisabled() {
 			continue
 		}
-		e.Draw()
+		e.Draw(screen)
 	}
 }
 

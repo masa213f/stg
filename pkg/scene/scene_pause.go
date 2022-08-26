@@ -3,23 +3,24 @@ package scene
 import (
 	"image/color"
 
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type pauseSceneHandler struct {
-	items *itemSelector
-	ctrl  util.Control
+	items  *itemSelector
+	screen util.Screen
+	ctrl   util.Control
 }
 
-func NewPause(ctrl util.Control) Handler {
+func NewPause(screen util.Screen, ctrl util.Control) Handler {
 	h := &pauseSceneHandler{
 		items: newItemSelector([]item{
 			{"continue", EventBack},
 			{"retire", GameEventRetire},
 		}),
-		ctrl: ctrl,
+		screen: screen,
+		ctrl:   ctrl,
 	}
 	return h
 }
@@ -58,6 +59,6 @@ func (h *pauseSceneHandler) Draw() {
 			disp = append(disp, t)
 		}
 	}
-	draw.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
-	draw.MultiText(resource.FontArcade, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignMiddle, disp)
+	h.screen.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
+	h.screen.MultiText(resource.FontArcade, color.White, util.HorizontalAlignCenter, util.VerticalAlignMiddle, disp)
 }

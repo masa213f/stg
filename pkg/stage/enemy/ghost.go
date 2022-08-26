@@ -4,9 +4,8 @@ import (
 	"image/color"
 	"math/rand"
 
-	"github.com/masa213f/stg/pkg/debug"
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/shape"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
@@ -62,13 +61,13 @@ func (g *ghost) Update() {
 	}
 }
 
-func (g *ghost) Draw() {
+func (g *ghost) Draw(screen util.Screen) {
 	switch g.state {
 	case enemyStateNormal:
-		draw.ImageAt(resource.ImageObake[(g.tick>>5)%4], g.drawRect.X0(), g.drawRect.Y0())
-		debug.DrawLineX(g.hitRect, color.Black)
+		screen.ImageAt(resource.ImageObake[(g.tick>>5)%4], g.drawRect.X0(), g.drawRect.Y0())
+		screen.DebugLineX(g.hitRect, color.Black)
 	case enemyStateDisappearing:
-		draw.ImageAt(resource.ImageEffectIce[(g.tick/2)], g.drawRect.X0(), g.drawRect.Y0())
+		screen.ImageAt(resource.ImageEffectIce[(g.tick/2)], g.drawRect.X0(), g.drawRect.Y0())
 	}
 }
 

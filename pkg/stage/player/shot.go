@@ -5,9 +5,8 @@ import (
 	"sort"
 
 	"github.com/masa213f/stg/pkg/constant"
-	"github.com/masa213f/stg/pkg/debug"
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/shape"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
@@ -15,7 +14,7 @@ const playerShotMaxNum = 100
 
 type PlayerShots interface {
 	Update()
-	Draw()
+	Draw(util.Screen)
 	NewShot(x, y, r, t int)
 	MakeInactive(index int)
 	GetHitRects() []*shape.Rect
@@ -70,13 +69,13 @@ func (ps *playerShotsImpl) Update() {
 	}
 }
 
-func (ps *playerShotsImpl) Draw() {
+func (ps *playerShotsImpl) Draw(screen util.Screen) {
 	for _, shot := range ps.store {
 		if !shot.active {
 			continue
 		}
-		draw.ImageAt(resource.ImageShot, shot.drawRect.X0(), shot.drawRect.Y0())
-		debug.DrawLineX(shot.hitRect, color.White)
+		screen.ImageAt(resource.ImageShot, shot.drawRect.X0(), shot.drawRect.Y0())
+		screen.DebugLineX(shot.hitRect, color.White)
 	}
 }
 

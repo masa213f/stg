@@ -3,17 +3,20 @@ package scene
 import (
 	"image/color"
 
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type titleSceneHandler struct {
-	ctrl util.Control
+	screen util.Screen
+	ctrl   util.Control
 }
 
-func NewTitle(ctrl util.Control) Handler {
-	return &titleSceneHandler{ctrl: ctrl}
+func NewTitle(screen util.Screen, ctrl util.Control) Handler {
+	return &titleSceneHandler{
+		screen: screen,
+		ctrl:   ctrl,
+	}
 }
 
 func (h *titleSceneHandler) Reset() {
@@ -28,9 +31,9 @@ func (h *titleSceneHandler) Update() Event {
 }
 
 func (h *titleSceneHandler) Draw() {
-	draw.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
-	draw.MultiText(resource.FontArcade, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignMiddle,
+	h.screen.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
+	h.screen.MultiText(resource.FontArcade, color.White, util.HorizontalAlignCenter, util.VerticalAlignMiddle,
 		[]string{"Shooting", "press z key"})
-	draw.Text(resource.FontArcadeSmall, color.White, draw.HorizontalAlignCenter, draw.VerticalAlignBottom,
+	h.screen.Text(resource.FontArcadeSmall, color.White, util.HorizontalAlignCenter, util.VerticalAlignBottom,
 		"Copyright (c) 2021 masa213f")
 }

@@ -3,15 +3,15 @@ package player
 import (
 	"image/color"
 
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/shape"
+	"github.com/masa213f/stg/pkg/util"
 )
 
 const BombDuration = 60 // 60 frame = 1 sec
 
 type PlayerBomb interface {
 	Update()
-	Draw()
+	Draw(screen util.Screen)
 	NewBomb(x, y int)
 	IsActive() bool
 	GetHitRect() *shape.Rect
@@ -39,11 +39,11 @@ func (bomb *playerBombImpl) Update() {
 	}
 }
 
-func (bomb *playerBombImpl) Draw() {
+func (bomb *playerBombImpl) Draw(screen util.Screen) {
 	if bomb.IsActive() {
 		// FIXME
-		draw.Rect(bomb.hitRect, color.Black)
-		draw.LineX(bomb.hitRect, color.Black)
+		screen.Rect(bomb.hitRect, color.Black)
+		screen.LineX(bomb.hitRect, color.Black)
 	}
 }
 

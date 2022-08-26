@@ -6,14 +6,14 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/masa213f/stg/pkg/constant"
-	"github.com/masa213f/stg/pkg/draw"
 	"github.com/masa213f/stg/pkg/shape"
+	"github.com/masa213f/stg/pkg/util"
 	"github.com/masa213f/stg/resource"
 )
 
 type Background interface {
 	Update()
-	Draw()
+	Draw(util.Screen)
 }
 
 const cloudSpeed = 4
@@ -54,9 +54,9 @@ func (b *backgroundImpl) Update() {
 	b.clouds.updateAll()
 }
 
-func (b *backgroundImpl) Draw() {
-	draw.ImageAt(resource.ImageBackground, -100, 0)
-	b.clouds.drawAll()
+func (b *backgroundImpl) Draw(screen util.Screen) {
+	screen.ImageAt(resource.ImageBackground, -100, 0)
+	b.clouds.drawAll(screen)
 }
 
 const inactiveObjectID = ^uint64(0)
@@ -111,11 +111,11 @@ func (list *cloudList) updateAll() {
 	sort.Slice(list.buffer, func(i, j int) bool { return list.buffer[i].id < list.buffer[j].id })
 }
 
-func (list *cloudList) drawAll() {
+func (list *cloudList) drawAll(screen util.Screen) {
 	for _, ent := range list.buffer {
 		if ent.id == inactiveObjectID {
 			break
 		}
-		draw.ImageAt(ent.image, ent.drawRect.X0(), ent.drawRect.Y0())
+		screen.ImageAt(ent.image, ent.drawRect.X0(), ent.drawRect.Y0())
 	}
 }
