@@ -9,6 +9,24 @@ type Handler interface {
 	Draw()
 }
 
+type dummySceneHandler struct{}
+
+func NewDummy() Handler {
+	return &dummySceneHandler{}
+}
+
+func (h *dummySceneHandler) Reset() {
+	panic("dummy reset")
+}
+
+func (h *dummySceneHandler) Update() Event {
+	panic("dummy update")
+}
+
+func (h *dummySceneHandler) Draw() {
+	panic("dummy draw")
+}
+
 const (
 	EventNone Event = iota
 	EventExit

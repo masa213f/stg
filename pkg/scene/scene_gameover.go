@@ -13,7 +13,7 @@ type gameOverSceneHandler struct {
 }
 
 func NewGameOver(screen util.Screen, ctrl util.Control) Handler {
-	return &gameOverSceneHandler{ctrl: ctrl}
+	return &gameOverSceneHandler{screen: screen, ctrl: ctrl}
 }
 
 func (h *gameOverSceneHandler) Reset() {
