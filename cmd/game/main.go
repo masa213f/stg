@@ -4,9 +4,7 @@ import (
 	"flag"
 	"fmt"
 	_ "image/png"
-	"math/rand"
 	"os"
-	"time"
 
 	"github.com/masa213f/stg/pkg/manager"
 )
@@ -19,7 +17,6 @@ var (
 )
 
 func init() {
-	rand.Seed(time.Now().UnixNano())
 	flag.BoolVar(&debugOpt, "debug", false, "show debug print")
 	flag.BoolVar(&versionOpt, "version", false, "show version")
 }
