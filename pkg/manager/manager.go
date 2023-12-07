@@ -126,7 +126,7 @@ func (m *Manager) Update() error {
 	m.tick++
 	if m.debug && m.tick%60 == 0 {
 		runtime.ReadMemStats(&m.memStat)
-		m.debugStatusLine = fmt.Sprintf("FPS: %0.1f\nTPS: %0.1f\n", ebiten.CurrentFPS(), ebiten.CurrentTPS())
+		m.debugStatusLine = fmt.Sprintf("FPS: %0.1f\nTPS: %0.1f\n", ebiten.ActualFPS(), ebiten.ActualTPS())
 		m.debugStatusLine += fmt.Sprintf("Heap: %2d (inuse: %2d, idle: %2d)\n", bToMib(m.memStat.HeapSys), bToMib(m.memStat.HeapInuse), bToMib(m.memStat.HeapIdle))
 		m.debugStatusLine += fmt.Sprintf("Sys: %2d (stack: %2d, heap: %2d)\n", bToMib(m.memStat.Sys), bToMib(m.memStat.StackSys), bToMib(m.memStat.HeapIdle))
 		m.debugStatusLine += fmt.Sprintf("Alloc/Sec: %d, NumGC/Sec: %d", bToMib(m.memStat.TotalAlloc-m.privTotalAlloc), m.memStat.NumGC-m.privNumGC)

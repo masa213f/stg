@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/masa213f/stg/pkg/shape"
 	"golang.org/x/image/font"
 )
@@ -92,7 +93,7 @@ func (s *screen) Fill(clr color.Color) {
 
 // Line draws a line.
 func (s *screen) Line(x1, y1, x2, y2 int, clr color.Color) {
-	ebitenutil.DrawLine(s.image, float64(x1), float64(y1), float64(x2), float64(y2), clr)
+	vector.StrokeLine(s.image, float32(x1), float32(y1), float32(x2), float32(y2), 1.0, clr, false)
 }
 
 // LineV draws the diagonal of the specified rect.
