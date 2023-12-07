@@ -23,7 +23,11 @@ setup: ## Setup necessary tools.
 
 .PHONY: clean
 clean: ## Clean files.
-	rm -rf $(BIN_DIR)/* $(OUT_DIR)/*
+	rm -rf $(OUT_DIR)/*
+
+.PNOHY: distclean
+distclean: clean ## Clean all files.
+	rm -rf $(BIN_DIR)/*
 	-rmdir $(BIN_DIR) $(OUT_DIR)
 
 ## Build
