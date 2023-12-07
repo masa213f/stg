@@ -16,10 +16,12 @@ jobs:
           go-version-file: go.mod
       - run: |
           # Install dependency libraries according to the Ebiten official page.
-          # https://ebiten.org/documents/install.html?os=linux
-          sudo apt-get install -y libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev libasound2-dev pkg-config
+          # https://ebitengine.org/en/documents/install.html?os=linux
+          sudo apt-get update
+          sudo apt install libc6-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev libasound2-dev pkg-config
       - run: make setup
       - run: make lint
       - run: make check-generate
-      # - run: make test
+      - run: Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+      - run: DISPLAY=:99 make test
       - run: make build

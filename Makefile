@@ -51,7 +51,7 @@ lint:
 
 .PHONY: test
 test:
-	go test -v ./... -tags test
+	go test -v ./...
 
 .PHONY: run
 run:
