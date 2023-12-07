@@ -51,7 +51,7 @@ lint:
 
 .PHONY: test
 test:
-	go test -v ./... -tags test
+	GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go test -v ./...
 
 .PHONY: run
 run:
