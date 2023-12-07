@@ -7,12 +7,12 @@ on:
 jobs:
   release:
     name: Release on GitHub
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
         with:
-          go-version: 1.18
+          go-version-file: go.mod
       - run: make setup
       - run: make build VERSION=${GITHUB_REF#refs/tags/}
       - run: make zip VERSION=${GITHUB_REF#refs/tags/}
